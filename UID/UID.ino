@@ -47,12 +47,12 @@ void loop() {
     String uid = getID();
     if(lastUid == uid){ //check if current card has the same uid as last scanned card
       Serial.println("Card Already Scanned");
-      tone(5, 2600, errorDelay);
+      tone(5, 2600, errorDelay); //error tone to D5
       delay(errorDelay);
         delay(1000);
     }
     else if(uid == "" || uid == " "){ //Check if UID is empty
-      tone(5, 2600, errorDelay);
+      tone(5, 2600, errorDelay);//error tone to D5
       delay(errorDelay);
       return;
         delay(1000);
@@ -61,7 +61,7 @@ void loop() {
       Serial.print("Card detected, UID: "); Serial.println(uid);
       lastUid = uid; //save current card to local memory
 
-      tone(5, 3300, successDelay);
+      tone(5, 3300, successDelay); //Success tone to D5
       delay(successDelay);
       tone(5, 3400, successDelay);
       delay(1000);
