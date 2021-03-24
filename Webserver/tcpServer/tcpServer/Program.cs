@@ -10,12 +10,10 @@ namespace tcpServer
 {
     class Program
     {
-        public static int Main(String[] args)
+        public static void Main(String[] args)
         {
             StartServer();
-            return 0;
         }
-
 
         public static void StartServer()
         {
@@ -24,12 +22,10 @@ namespace tcpServer
             // If a host has multiple addresses, you will get a list of addresses  
             IPHostEntry host = Dns.GetHostEntry("localhost");
             IPAddress ipAddress = host.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 9999);
-
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 10932);
 
             try
             {
-
                 // Create a Socket that will use Tcp protocol      
                 Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 // A Socket must be associated with an endpoint using the Bind method  
@@ -57,6 +53,13 @@ namespace tcpServer
                 }
 
                 //Check message => 'data'
+                char[] sbArray = data.ToCharArray();
+
+                char[] headerElem = new char[5];
+
+                Array.Copy(sbArray, 0, headerElem, 0, 4);
+
+                Console.WriteLine(headerElem[4]);
 
 
 
