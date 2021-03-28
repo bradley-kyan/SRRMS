@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "\\\\avcol.school.nz\\Personal\\Students\\ac99192\\Documents\\GitHub\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj": {}
+    "C:\\Users\\Family\\Desktop\\Arduino\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj": {}
   },
   "projects": {
-    "\\\\avcol.school.nz\\Personal\\Students\\ac99192\\Documents\\GitHub\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj": {
+    "C:\\Users\\Family\\Desktop\\Arduino\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "\\\\avcol.school.nz\\Personal\\Students\\ac99192\\Documents\\GitHub\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj",
+        "projectUniqueName": "C:\\Users\\Family\\Desktop\\Arduino\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj",
         "projectName": "tcpServer",
-        "projectPath": "\\\\avcol.school.nz\\Personal\\Students\\ac99192\\Documents\\GitHub\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj",
-        "packagesPath": "C:\\Users\\ac99192\\.nuget\\packages\\",
-        "outputPath": "\\\\avcol.school.nz\\Personal\\Students\\ac99192\\Documents\\GitHub\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\obj\\",
+        "projectPath": "C:\\Users\\Family\\Desktop\\Arduino\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj",
+        "packagesPath": "C:\\Users\\Family\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Family\\Desktop\\Arduino\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
+          "C:\\Microsoft\\Xamarin\\NuGet\\",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\ac99192\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Family\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -44,6 +45,10 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[5.0.2, )"
+            },
             "System.Text.Encoding": {
               "target": "Package",
               "version": "[4.3.0, )"
@@ -64,7 +69,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }
