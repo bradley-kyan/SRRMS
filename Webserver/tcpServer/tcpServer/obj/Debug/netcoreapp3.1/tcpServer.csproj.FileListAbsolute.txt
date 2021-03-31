@@ -30,3 +30,9 @@ C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\bin\De
 C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
 C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
 C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\netcoreapp3.1\tcpServer.csproj.CopyComplete
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\bin\Debug\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\bin\Debug\netcoreapp3.1\System.Drawing.Common.dll
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\netcoreapp3.1\tcpServer.csproj.CopyComplete
