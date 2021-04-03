@@ -167,5 +167,14 @@ namespace tcpServer
                 Console.WriteLine(e.ToString());
             }
         }
+
+        private void SendData()
+        {
+            Prefernces p = new Prefernces();
+            string con = p.ConnectionString;
+            string pwd = p.PWD;
+
+
+        }
     }
 }
