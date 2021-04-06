@@ -324,6 +324,25 @@ namespace tcpServer
             DeviceManage();
         }
 
+        private bool productVerify(string input)
+        {
+            string[] keySplit = input.Split("-");
+            if(keySplit[0].Length != 4)
+            {
+                return false;
+            }
+
+            //divisible by 26
+
+            char c = 'a';
+
+            int index = char.ToUpper(c) - 64;
+
+
+            return true;
+        }
+
+
         public void RemoveDevice()
         {
             bool repeat = false;
