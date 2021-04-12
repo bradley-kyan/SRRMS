@@ -323,34 +323,45 @@ namespace tcpServer
             Serializer();
             DeviceManage();
         }
+
         private bool productVerify(string input)
         {
             string[] keySplit = input.Split("-");
+            try
+            {
+                if (keySplit[0].Length != 4 || keySplit[1].Length != 4 || keySplit[2].Length != 4 || keySplit[3].Length != 4)
+                {
+                    return false;
+                }
 
-            if(keySplit[0].Length != 4 || keySplit[1].Length != 4 || keySplit[2].Length != 4 || keySplit[3].Length != 4)
+                int[] numSplit = new int[4];
+
+                foreach (string s in keySplit)
+                {
+                    char[] c = s.ToCharArray();
+
+                    int[] numbersRaw = new int[4];
+
+                    for (int i = 0; i <= c.Length; i++)
+                    {
+                        int index = char.ToUpper(c[i]) - 64;
+                        numbersRaw.Append(index);
+                    }
+                    numSplit.Append(Convert.ToInt32(String.Join("", numbersRaw)));
+                }
+                Console.WriteLine(numSplit);
+                return true;
+            }
+            catch
             {
                 return false;
             }
+            
 
-            foreach(string s in keySplit)
-            {
-                char[] c = s.ToCharArray();
+           // Random rand = new Random(DateTime.Now.Millisecond/DateTime.Now.Month);
+           // int rand9 = rand.Next(1, 10);
 
-                int[] numbersRaw = new int[4];
-
-                for (int i = 0; i <= c.Length; i++)
-                {
-                    int index = char.ToUpper(c[i]) - 64;
-                    numbersRaw.Append(index);
-                }
-            }
-
-            Random rand = new Random(DateTime.Now.Millisecond/DateTime.Now.Month);
-            int rand9 = rand.Next(1, 10);
-
-            //divisible by 26
-
-            return true;
+            //divisible by 26 
         }
 
 
