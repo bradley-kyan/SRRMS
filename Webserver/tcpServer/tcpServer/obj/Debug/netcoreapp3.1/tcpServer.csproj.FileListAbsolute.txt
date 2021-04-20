@@ -35,3 +35,4 @@ C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\obj\De
 C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\netcoreapp3.1\tcpServer.dll
 C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\netcoreapp3.1\tcpServer.pdb
 C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\netcoreapp3.1\tcpServer.genruntimeconfig.cache
+C:\Users\Family\Desktop\Arduino\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\netcoreapp3.1\tcpServer.csprojAssemblyReference.cache
