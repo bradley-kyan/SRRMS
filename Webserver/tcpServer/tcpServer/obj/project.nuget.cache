@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "gRAcu5EhGF9vTk4+ez+l4q2vFFK32f1ZFXNlnyFb5ixNT6aq5U4/+vrIcEPDYoNfQ/gIzjT/LAcQDzWFviPd7g==",
+  "dgSpecHash": "BNo5Ef3fsYcLhsqRFWkLWCk0ROSlsTKXYM8PWLqiGJRgb8rtyfyWPQ1yApUynRCO0pqXI5e+YntRVa4dBHx4KQ==",
   "success": true,
-  "projectFilePath": "\\\\avcol.school.nz\\Personal\\Students\\ac99192\\Documents\\GitHub\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj",
+  "projectFilePath": "C:\\Users\\Family\\Documents\\GitHub\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\ac99192\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
-    "C:\\Users\\ac99192\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
-    "C:\\Users\\ac99192\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
-    "C:\\Users\\ac99192\\.nuget\\packages\\system.drawing.common\\5.0.2\\system.drawing.common.5.0.2.nupkg.sha512",
-    "C:\\Users\\ac99192\\.nuget\\packages\\system.runtime\\4.3.0\\system.runtime.4.3.0.nupkg.sha512",
-    "C:\\Users\\ac99192\\.nuget\\packages\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512"
+    "C:\\Users\\Family\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "C:\\Users\\Family\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
+    "C:\\Users\\Family\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
+    "C:\\Users\\Family\\.nuget\\packages\\system.drawing.common\\5.0.2\\system.drawing.common.5.0.2.nupkg.sha512",
+    "C:\\Users\\Family\\.nuget\\packages\\system.runtime\\4.3.0\\system.runtime.4.3.0.nupkg.sha512",
+    "C:\\Users\\Family\\.nuget\\packages\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512"
   ],
   "logs": []
 }

@@ -76,6 +76,28 @@ namespace tcpServer
             Deserializer();
             if (p.DbType is null)
             {
+                bool repeat;
+                do
+                {
+                    repeat = false;
+                    Console.WriteLine("Specify Database provider: (Press 1 or 2)\n1 : MySql\n2 : MSSQL");
+                    ConsoleKeyInfo keyType = Console.ReadKey(true);
+                    var input = keyType.Key;
+                    if (input == ConsoleKey.D1)
+                    {
+
+                    }
+                    else if(input == ConsoleKey.D2)
+                    {
+
+                    }
+                    else
+                    {
+                        repeat = true;
+                    }
+
+                }while(repeat == true);
+
 
             }
 
