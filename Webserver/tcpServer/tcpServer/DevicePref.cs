@@ -73,8 +73,14 @@ namespace tcpServer
 
         public void Pref()
         {
-            Header(1);
             Deserializer();
+            if (p.DbType is null)
+            {
+
+            }
+
+            Header(1);
+            Console.WriteLine($"\nDatabase Connection String: {p.ConnectionString}");
         }
 
         public string Serializer()//Writes data to file

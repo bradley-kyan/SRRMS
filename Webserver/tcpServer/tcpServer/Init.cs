@@ -44,8 +44,8 @@ namespace tcpServer
     public class Prefernces
     {
         public DateTime UpdateTime { get; set; }
+        public string DbType { get; set; }
         public string ConnectionString { get; set; }
-        public string PWD { get; set; }
         public IList<string> DeviceIds { get; set; }
         public IList<string> DeviceNote { get; set; }
         public Prefernces()

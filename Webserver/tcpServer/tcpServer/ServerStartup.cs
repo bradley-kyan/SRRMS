@@ -172,9 +172,6 @@ namespace tcpServer
         {
             Prefernces p = new Prefernces();
             string con = p.ConnectionString;
-            string pwd = p.PWD;
-
-
         }
     }
 }
