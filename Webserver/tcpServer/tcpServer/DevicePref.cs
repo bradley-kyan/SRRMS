@@ -8,9 +8,9 @@ using System.Threading;
 
 namespace tcpServer
 {
-    class DevicePref : Init
+    public class DevicePref : Init
     {
-        Prefernces p = new Prefernces();
+        public Prefernces p = new Prefernces();
 
         public void Header(int header)
         {
@@ -71,8 +71,10 @@ namespace tcpServer
             }
         }
 
+
         public void Pref()
         {
+            var conStr = new ConnectionString();
             Deserializer();
             if (p.DbType is null)
             {
@@ -80,16 +82,17 @@ namespace tcpServer
                 do
                 {
                     repeat = false;
-                    Console.WriteLine("Specify Database provider: (Press 1 or 2)\n1 : MySql\n2 : MSSQL");
+                    Header(1);
+                    Console.Write("Specify Database provider: (Press 1 or 2)\n1 : MySql\n2 : MSSQL");
                     ConsoleKeyInfo keyType = Console.ReadKey(true);
                     var input = keyType.Key;
                     if (input == ConsoleKey.D1)
                     {
-
+                        p.DbType = "MySql";
                     }
                     else if(input == ConsoleKey.D2)
                     {
-
+                        p.DbType = "MSSQL";
                     }
                     else
                     {
@@ -98,12 +101,19 @@ namespace tcpServer
 
                 }while(repeat == true);
 
-
+                Header(1);
+                conStr.setConString();
+            }
+            if(p.ConnectionString is null)
+            {
+                Header(1);
+                conStr.setConString();
             }
 
             Header(1);
-            Console.WriteLine($"\nDatabase Connection String: {p.ConnectionString}");
+            Console.WriteLine($" Current database provider: {p.DbType}");
         }
+
 
         public string Serializer()//Writes data to file
         {
@@ -222,7 +232,7 @@ namespace tcpServer
                 string result;
                 StringBuilder buffer = new StringBuilder();
 
-                Console.WriteLine(" Enter ID of device (10 digit code) then press enter: (ESC to cancel)");
+                Console.WriteLine(" Enter ID of device then press enter: (ESC to cancel)");
 
                 //The key is read passing true for the intercept argument to prevent
                 //any characters from displaying when the Escape key is pressed.
@@ -390,6 +400,27 @@ namespace tcpServer
             }
         }
     }
+    internal class ConnectionString : DevicePref
+    {
+        internal string getConString()
+        {
+            Deserializer();
+            if (p.ConnectionString is null)
+                return "null";
+            else
+                return p.ConnectionString;
+        }
+        internal void setConString()
+        {
+            Deserializer();
+            Console.WriteLine($"Enter connection string for {p.DbType}");
+            string output = Console.ReadLine();
+            p.ConnectionString = output;
+            Console.WriteLine("Successfully created / updated database connection string!\n\nPress Any Key...");
+            Console.ReadKey(true);
+            Serializer();
+        }
 
+    }
 }
     

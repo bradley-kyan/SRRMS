@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace tcpServer
 {
-    class Init
+    public class Init
     {
         public const string options = " 1: Setup\n 2: Devices\n 3: Start server\n_____________________________\n\n F12: Exit";
         public static string currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

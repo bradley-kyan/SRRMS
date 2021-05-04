@@ -1,7 +1,11 @@
 {
-  "UpdateTime": "2021-05-03T14:20:34.5511298+12:00",
-  "DbType": null,
-  "ConnectionString": null,
-  "DeviceIds": [],
-  "DeviceNote": []
+  "UpdateTime": "2021-05-04T21:33:40.4942349+12:00",
+  "DbType": "MSSQL",
+  "ConnectionString": "testqwadaw",
+  "DeviceIds": [
+    "ewaf534qdo"
+  ],
+  "DeviceNote": [
+    "ewaf534qdo  --  null"
+  ]
 }
