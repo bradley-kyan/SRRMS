@@ -38,7 +38,6 @@ namespace tcpServer
                     break;
             }
         }
-
         public void OptionSelect()
         {
             Header(2);
@@ -70,52 +69,7 @@ namespace tcpServer
                     break;
             }
         }
-
-
-        public void Pref()
-        {
-            var conStr = new ConnectionString();
-            Deserializer();
-            if (p.DbType is null)
-            {
-                bool repeat;
-                do
-                {
-                    repeat = false;
-                    Header(1);
-                    Console.Write("Specify Database provider: (Press 1 or 2)\n1 : MySql\n2 : MSSQL");
-                    ConsoleKeyInfo keyType = Console.ReadKey(true);
-                    var input = keyType.Key;
-                    if (input == ConsoleKey.D1)
-                    {
-                        p.DbType = "MySql";
-                    }
-                    else if(input == ConsoleKey.D2)
-                    {
-                        p.DbType = "MSSQL";
-                    }
-                    else
-                    {
-                        repeat = true;
-                    }
-
-                }while(repeat == true);
-
-                Header(1);
-                conStr.setConString();
-            }
-            if(p.ConnectionString is null)
-            {
-                Header(1);
-                conStr.setConString();
-            }
-
-            Header(1);
-            Console.WriteLine($" Current database provider: {p.DbType}");
-        }
-
-
-        public string Serializer()//Writes data to file
+        internal string Serializer()//Writes data to file
         {
             Header(1);
 
@@ -137,8 +91,7 @@ namespace tcpServer
                 return null;
             }
         }
-
-        public string Deserializer()//Gets data from file
+        internal string Deserializer()//Gets data from file
         {
             Header(1);
 
@@ -161,7 +114,6 @@ namespace tcpServer
                 return null;
             }
         }
-
         public void DeviceManage()
         {
             Header(1);
@@ -192,14 +144,12 @@ namespace tcpServer
                     break;
             }
         }
-
         public int DeviceCount()
         {
             var none = 0;
             int amount = p?.DeviceIds?.Count ?? none;
             return amount;
         }
-
         public void ViewDevices()
         {
             bool repeat;
@@ -311,7 +261,6 @@ namespace tcpServer
             Serializer();
             DeviceManage();
         }
-
         public void RemoveDevice()
         {
             bool repeat = false;
@@ -389,7 +338,6 @@ namespace tcpServer
             while (repeat == true);
             DeviceManage();
         }
-
         public void Devices()
         {
             int amount = 1;
@@ -398,10 +346,129 @@ namespace tcpServer
                 Console.WriteLine($" {amount}: {item}");
                 amount++;
             }
+        }        
+        public void Pref()
+        {
+            var conStr = new ConnectionString();
+            conStr.setDbProvider();
+            Header(1);
+            Deserializer();
+            Console.WriteLine($" Current database provider: {p.DbType}\n Press ESC to Return\n\n 1: Change Database Provider\n 2: View Connection String\n 3: Edit Connection String\n");
+
+            ConsoleKeyInfo info = Console.ReadKey(true);
+
+            switch (info.Key)
+            {
+                case ConsoleKey.D1:
+                    conStr.setDbProvider(true);
+                    break;
+                case ConsoleKey.D2:
+                    Header(1);
+                    Console.WriteLine($" {conStr.getConString()}\n\n Press Any Key...");
+                    Console.ReadKey(true);
+                    Pref();
+                    break;
+                case ConsoleKey.D3:
+                    conStr.setConString();
+                    break;
+                case ConsoleKey.Escape:
+                    OptionSelect();
+                    break;
+                case ConsoleKey.F12:
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Pref();
+                    break;
+            }
         }
     }
     internal class ConnectionString : DevicePref
     {
+        /// <summary>
+        /// Sets the database provider from the command line.
+        /// <para /> Method can be overloaded with => <c>Bool</c> This is to be used from option selection.
+        /// </summary>
+        internal void setDbProvider()
+        {
+            Deserializer();
+            if (p.DbType is null)
+            {
+                bool repeat;
+                do
+                {
+                    repeat = false;
+                    Header(1);
+                    Console.Write("Specify Database provider: (Press 1 or 2)\n1 : MySQL (disabled)\n2 : MSSQL");
+                    ConsoleKeyInfo keyType = Console.ReadKey(true);
+                    var input = keyType.Key;
+                    /*if (input == ConsoleKey.D1)
+                    {
+                        p.DbType = "MySql";
+                    }*/
+                    if (input == ConsoleKey.D2)
+                    {
+                        p.DbType = "MSSQL";
+                    }
+                    else
+                    {
+                        repeat = true;
+                    }
+
+                } while (repeat == true);
+
+                Header(1);
+                setConString();
+                return;
+            }
+            if (p.ConnectionString is null)
+            {
+                Header(1);
+                setConString();
+                return;
+            }
+        }
+        /// <summary>
+        /// Sets the database provider from the command line.
+        /// <para /> Method can be overloaded with => <c>Bool</c> This is to be used from option selection.
+        /// </summary>
+        internal void setDbProvider(bool get)
+        {
+            Deserializer();
+            string originProvider = p.DbType;
+            bool repeat;
+            do
+            {
+                repeat = false;
+                Header(1);
+                Console.Write(" Specify Database provider: \n Press ESC to return\n\n 1 : MySQL (disabled)\n 2 : MSSQL");
+                ConsoleKeyInfo keyType = Console.ReadKey(true);
+                var input = keyType.Key;
+                /*if (input == ConsoleKey.D1)
+                {
+                    p.DbType = "MySql";
+                }*/
+                if (input == ConsoleKey.D2)
+                {
+                    p.DbType = "MSSQL";
+                }
+                else if (input == ConsoleKey.Escape)
+                {
+                    Pref();
+                }
+                else
+                {
+                    repeat = true;
+                }
+            } while (repeat == true);
+            if (originProvider == p.DbType)
+            {
+                return;
+            }
+            Header(1);
+            setConString();
+            return;
+        }
         internal string getConString()
         {
             Deserializer();
@@ -412,6 +479,7 @@ namespace tcpServer
         }
         internal void setConString()
         {
+            Serializer();
             Deserializer();
             Console.WriteLine($"Enter connection string for {p.DbType}");
             string output = Console.ReadLine();
@@ -420,7 +488,6 @@ namespace tcpServer
             Console.ReadKey(true);
             Serializer();
         }
-
     }
 }
     

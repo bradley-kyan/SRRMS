@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "BNo5Ef3fsYcLhsqRFWkLWCk0ROSlsTKXYM8PWLqiGJRgb8rtyfyWPQ1yApUynRCO0pqXI5e+YntRVa4dBHx4KQ==",
+  "dgSpecHash": "8nE9F167MxLCm4oPJxHCONHR7A2eI1kThqRfXHF21cRRLx7Jxp+c5qQgsQw12V+g6Qpo43MF1QNqTFOYYnpGCA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Family\\Documents\\GitHub\\Arduino-UID\\Webserver\\tcpServer\\tcpServer\\tcpServer.csproj",
   "expectedPackageFiles": [
