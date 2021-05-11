@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace tcpServer
 {
@@ -17,17 +19,34 @@ namespace tcpServer
             foreach (string s in split)
             {
                 string raw = s.Substring(s.IndexOf(':') + 1);
-
             }
         }
 
-        private bool VerifySender()
+        private static Task<bool> VerifySender(string input)
         {
-            return false;
+            Prefernces p = new Prefernces();
+            if (p.DeviceIds.Contains(input))
+                return Task.FromResult(true);
+            else
+                return Task.FromResult(false);
         }
-        private void DBHandler()
+        private static async Task ConsumeTasks(CancellationToken cancel)
         {
-
+            foreach (var task in ProduceForever(cancel))
+            {
+                await task;
+            }
+        }
+        private static IEnumerable<Task> ProduceForever(CancellationToken cancel)
+        {
+            do
+            {
+                yield return DBHandler();
+            } while (!cancel.IsCancellationRequested);
+        }
+        private static async Task DBHandler()
+        {
+            return;
         }
     }
 }

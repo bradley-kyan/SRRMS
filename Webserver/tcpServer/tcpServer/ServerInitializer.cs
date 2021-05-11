@@ -10,7 +10,8 @@ namespace tcpServer
     {
         internal void Initializer()
         {
-
+            Header(1);
+            Console.WriteLine("Initalising...");
         }
     }
 }
