@@ -136,7 +136,6 @@ namespace tcpServer
                 }
             }
         }
-
         private static void Send(Socket handler, String data)
         {
             // Convert the string data to byte data using ASCII encoding.  
@@ -166,12 +165,6 @@ namespace tcpServer
             {
                 Console.WriteLine(e.ToString());
             }
-        }
-
-        private void SendData()
-        {
-            Prefernces p = new Prefernces();
-            string con = p.ConnectionString;
         }
     }
 }

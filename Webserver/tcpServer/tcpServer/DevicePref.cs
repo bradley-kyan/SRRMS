@@ -12,7 +12,7 @@ namespace tcpServer
     {
         public Prefernces p = new Prefernces();
 
-        public void Header(int header)
+        public void Header(byte header)
         {
             //Calvin S Font https://patorjk.com/software/taag/#p=display&f=Calvin%20S&t=
             string title = "\n \u2554\u2550\u2557\u2566\u2550\u2557\u2566\u2550\u2557\u2554\u2566\u2557\u2554\u2550\u2557  \u2554\u2550\u2557\u2554\u2550\u2557\u2566\u2550\u2557\u2566  \u2566\u2554\u2550\u2557\u2566\u2550\u2557\r\n \u255A\u2550\u2557\u2560\u2566\u255D\u2560\u2566\u255D\u2551\u2551\u2551\u255A\u2550\u2557  \u255A\u2550\u2557\u2551\u2563 \u2560\u2566\u255D\u255A\u2557\u2554\u255D\u2551\u2563 \u2560\u2566\u255D\r\n \u255A\u2550\u255D\u2569\u255A\u2550\u2569\u255A\u2550\u2569 \u2569\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D\u2569\u255A\u2550 \u255A\u255D \u255A\u2550\u255D\u2569\u255A\u2550\n";
@@ -40,6 +40,8 @@ namespace tcpServer
         }
         public void OptionSelect()
         {
+            var ServerStart = new ServerInitializer();
+
             Header(2);
             ConsoleKeyInfo info = Console.ReadKey(true);
 
@@ -57,7 +59,7 @@ namespace tcpServer
                     break;
                 case ConsoleKey.D3:
                     Header(3);
-                    Console.WriteLine("Pressed 3");
+                    ServerStart.Initializer();
                     break;
                 case ConsoleKey.F12:
                     Environment.Exit(0);
@@ -213,7 +215,7 @@ namespace tcpServer
                     if (result.Length != 10)
                     {
                         Console.WriteLine("Invalid Length");
-                        ; Thread.Sleep(1000);
+                        Thread.Sleep(1000);
                         AddDevice();
                     }
 
@@ -346,11 +348,11 @@ namespace tcpServer
                 Console.WriteLine($" {amount}: {item}");
                 amount++;
             }
-        }        
+        }
         public void Pref()
         {
             var conStr = new ConnectionString();
-            conStr.setDbProvider();
+            conStr.SetDbProvider();
             Header(1);
             Deserializer();
             Console.WriteLine($" Current database provider: {p.DbType}\n Press ESC to Return\n\n 1: Change Database Provider\n 2: View Connection String\n 3: Edit Connection String\n");
@@ -360,16 +362,16 @@ namespace tcpServer
             switch (info.Key)
             {
                 case ConsoleKey.D1:
-                    conStr.setDbProvider(true);
+                    conStr.SetDbProvider(true);
                     break;
                 case ConsoleKey.D2:
                     Header(1);
-                    Console.WriteLine($" {conStr.getConString()}\n\n Press Any Key...");
+                    Console.WriteLine($" {conStr.GetConString()}\n\n Press Any Key...");
                     Console.ReadKey(true);
                     Pref();
                     break;
                 case ConsoleKey.D3:
-                    conStr.setConString();
+                    conStr.SetConString();
                     break;
                 case ConsoleKey.Escape:
                     OptionSelect();
@@ -387,9 +389,9 @@ namespace tcpServer
     {
         /// <summary>
         /// Sets the database provider from the command line.
-        /// <para /> Method can be overloaded with => <c>Bool</c> This is to be used from option selection.
+        /// <para /> Method can be overloaded with => <c>Bool</c> This is to be used for option selection.
         /// </summary>
-        internal void setDbProvider()
+        internal void SetDbProvider()
         {
             Deserializer();
             if (p.DbType is null)
@@ -418,21 +420,21 @@ namespace tcpServer
                 } while (repeat == true);
 
                 Header(1);
-                setConString();
-                return;
+                SetConString();
+                Pref();
             }
             if (p.ConnectionString is null)
             {
                 Header(1);
-                setConString();
-                return;
+                SetConString();
+                Pref();
             }
         }
         /// <summary>
         /// Sets the database provider from the command line.
-        /// <para /> Method can be overloaded with => <c>Bool</c> This is to be used from option selection.
+        /// <para /> Method can be overloaded with => <c>Bool</c> This is to be used for option selection.
         /// </summary>
-        internal void setDbProvider(bool get)
+        internal void SetDbProvider(bool get)
         {
             Deserializer();
             string originProvider = p.DbType;
@@ -463,13 +465,13 @@ namespace tcpServer
             } while (repeat == true);
             if (originProvider == p.DbType)
             {
-                return;
+                Pref();
             }
             Header(1);
-            setConString();
-            return;
+            SetConString();
+            Pref();
         }
-        internal string getConString()
+        internal string GetConString()
         {
             Deserializer();
             if (p.ConnectionString is null)
@@ -477,17 +479,64 @@ namespace tcpServer
             else
                 return p.ConnectionString;
         }
-        internal void setConString()
+        internal void SetConString()
         {
             Serializer();
             Deserializer();
-            Console.WriteLine($"Enter connection string for {p.DbType}");
-            string output = Console.ReadLine();
-            p.ConnectionString = output;
-            Console.WriteLine("Successfully created / updated database connection string!\n\nPress Any Key...");
-            Console.ReadKey(true);
-            Serializer();
+
+            bool repeat = false;
+            do
+            {
+                Header(1);
+                Console.WriteLine($" Enter connection string for {p.DbType}: (ESC to cancel)\n");
+
+                string result;
+                StringBuilder buffer = new StringBuilder();
+
+                //The key is read passing true for the intercept argument to prevent
+                //any characters from displaying when the Escape key is pressed.
+                ConsoleKeyInfo info = Console.ReadKey(true);
+                if (info.Key == ConsoleKey.Escape)
+                {
+                    Pref();
+                }
+                while (info.Key != ConsoleKey.Enter && info.Key != ConsoleKey.Escape)
+                {
+                    if (info.Key == ConsoleKey.Backspace)
+                    {
+                        Console.Write("\b");
+                        Console.Write(" ");
+                        Console.Write("\b");
+                    }
+                    else
+                    {
+                        Console.Write(info.KeyChar);
+                    }
+                    buffer.Append(info.KeyChar);
+                    info = Console.ReadKey(true);
+                }
+                if (info.Key == ConsoleKey.Enter)
+                {
+                    result = buffer.ToString();
+
+                    Console.WriteLine("\n Is this correct? => {0} \n Y: Yes\n N: No", result);
+
+                    if (Console.ReadKey().KeyChar.ToString() == "y")
+                    {
+                        p.ConnectionString = result;
+                        Serializer();
+                        Console.WriteLine(" Successfully created / updated database connection string!\n\n Press Any Key...");
+                        Console.ReadKey(true);
+                        Pref();
+                    }
+                    else
+                    {
+                        repeat = true;
+                    }
+                }
+            }
+            while (repeat == true);
         }
     }
 }
-    
+

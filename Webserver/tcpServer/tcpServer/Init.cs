@@ -35,7 +35,7 @@ namespace tcpServer
                 s.Serializer();
                 Console.WriteLine(" Created preferences.json\n\n");
             }
-            Thread.Sleep(1000);
+            Thread.Sleep(200);
             s.OptionSelect();
 
         }
