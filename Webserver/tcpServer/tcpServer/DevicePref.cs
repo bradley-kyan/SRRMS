@@ -74,46 +74,51 @@ namespace tcpServer
         internal string Serializer()//Writes data to file
         {
             Header(1);
-
-            p.UpdateTime = DateTime.Now;
-            try
+            lock (this)
             {
-                var options = new JsonSerializerOptions
+                p.UpdateTime = DateTime.Now;
+                try
                 {
-                    WriteIndented = true,
-                };
+                    var options = new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                    };
 
-                string jsonString = JsonSerializer.Serialize(p, options);
-                File.WriteAllText(pLocate, jsonString);
-                return jsonString;
+                    string jsonString = JsonSerializer.Serialize(p, options);
+                    File.WriteAllText(pLocate, jsonString);
+                    return jsonString;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e + "\n\n ERROR");
+                    return null;
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e + "\n\n ERROR");
-                return null;
-            }
+
         }
         internal string Deserializer()//Gets data from file
         {
             Header(1);
-
-            try
+            lock (this)
             {
-                var text = File.ReadAllText(pLocate);
-
-                var options = new JsonSerializerOptions
+                try
                 {
-                    WriteIndented = true,
-                };
-                p = JsonSerializer.Deserialize<Prefernces>(text, options);
-                string jsonString = JsonSerializer.Serialize(p, options);
+                    var text = File.ReadAllText(pLocate);
 
-                return jsonString;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e + "\n\n ERROR");
-                return null;
+                    var options = new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                    };
+                    p = JsonSerializer.Deserialize<Prefernces>(text, options);
+                    string jsonString = JsonSerializer.Serialize(p, options);
+
+                    return jsonString;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e + "\n\n ERROR");
+                    return null;
+                }
             }
         }
         public void DeviceManage()
