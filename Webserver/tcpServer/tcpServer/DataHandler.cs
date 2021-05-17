@@ -35,11 +35,23 @@ namespace tcpServer
         {
             await Task.Run(() =>
             {
-                DataQueue.Enqueue(data);
+                string lhs = DataClean(data, 1);
+                string rhs = DataClean(data, 2);
+
+                if (VerifySender(lhs) != true)
+                    throw ReturnVerifyError();
+                else
+                {
+
+                }
             });
+            
         }
 
-
+        public Exception ReturnVerifyError()
+        {
+            return null;
+        }
 
         private static bool VerifySender(string input)
         {

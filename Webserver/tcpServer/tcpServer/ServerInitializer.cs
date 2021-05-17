@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-
 namespace tcpServer
 {
     internal class ServerInitializer : DevicePref
@@ -61,7 +58,7 @@ namespace tcpServer
             wtoken = new CancellationTokenSource();
 
             // Set the task.
-            task = CreateNeverEndingTask(now => DoWork(), wtoken.Token);
+            task = CreateNeverEndingTask(now => method(), wtoken.Token);
 
             // Start the task.  Post the time.
             task.Post(DateTimeOffset.Now);
