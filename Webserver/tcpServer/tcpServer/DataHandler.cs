@@ -43,8 +43,11 @@ namespace tcpServer
             }
         }
 
+        DataSet dataSet = new DataSet();
+
         private void ConnectionOpen(string procedureName)
         {
+            
             Prefernces p = new Prefernces();
             try
             {
@@ -56,19 +59,11 @@ namespace tcpServer
                     command.CommandType = CommandType.StoredProcedure;
                     command.Connection = sqlConnection1;
                     sqlConnection1.Open();
-
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlDataAdapter adapter = new SqlDataAdapter())
                     {
-                        // Data is accessible through the DataReader object here.
-                        reader.Read();
-
-                        var myObject = new object[100];
-
-                        int colCount = reader.GetValues(myObject);
-                        for (int i = 0; i < colCount; i++)
-                        {
-                            myStringList.Add((string)myObject[i]);
-                        }
+                        adapter.Fill(dataSet);
+                        adapter.Dispose();
+                        var cache = new Cache();
                     }
                 }
             }

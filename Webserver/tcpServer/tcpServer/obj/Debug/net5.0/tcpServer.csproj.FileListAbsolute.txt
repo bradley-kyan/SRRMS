@@ -1,0 +1,5 @@
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\net5.0\tcpServer.csprojAssemblyReference.cache
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\net5.0\tcpServer.GeneratedMSBuildEditorConfig.editorconfig
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\net5.0\tcpServer.AssemblyInfoInputs.cache
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\net5.0\tcpServer.AssemblyInfo.cs
+\\avcol.school.nz\Personal\Students\ac99192\Documents\GitHub\Arduino-UID\Webserver\tcpServer\tcpServer\obj\Debug\net5.0\tcpServer.csproj.CoreCompileInputs.cache

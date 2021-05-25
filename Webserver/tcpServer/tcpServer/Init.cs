@@ -10,6 +10,7 @@ using System.Threading;
 using System.Text.Json;
 using System.Collections;
 using System.Linq;
+using System.Runtime.Caching;
 
 namespace tcpServer
 {
@@ -53,5 +54,9 @@ namespace tcpServer
             DeviceIds = new List<string>();
             DeviceNote = new List<string>();
         }
+    }
+    public class Cache
+    {
+        public ObjectCache cache = MemoryCache.Default;
     }
 }
