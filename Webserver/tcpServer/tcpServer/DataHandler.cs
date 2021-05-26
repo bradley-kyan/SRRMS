@@ -63,7 +63,6 @@ namespace tcpServer
                     {
                         adapter.Fill(dataSet);
                         adapter.Dispose();
-                        var cache = new Cache();
                     }
                 }
             }

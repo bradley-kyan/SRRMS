@@ -44,6 +44,10 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "Microsoft.Extensions.Caching.Memory": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
             "System.Data.DataSetExtensions": {
               "target": "Package",
               "version": "[4.5.0, )"

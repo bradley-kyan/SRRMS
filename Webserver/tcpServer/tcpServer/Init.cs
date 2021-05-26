@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Timers;
 using System.IO;
 using System.Reflection;
-using System.Drawing.Imaging;
-using System.Drawing;
 using System.Threading;
-using System.Text.Json;
-using System.Collections;
-using System.Linq;
-using System.Runtime.Caching;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace tcpServer
 {
@@ -55,8 +50,5 @@ namespace tcpServer
             DeviceNote = new List<string>();
         }
     }
-    public class Cache
-    {
-        public ObjectCache cache = MemoryCache.Default;
-    }
 }
+
