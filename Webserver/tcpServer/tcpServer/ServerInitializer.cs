@@ -69,7 +69,7 @@ namespace tcpServer
             // CancellationTokenSource implements IDisposable.
             using (wtoken)
             {
-                // Cancel.  This will cancel the task.
+                // Cancel. This will cancel the task.
                 wtoken.Cancel();
             }
 

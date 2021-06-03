@@ -30,24 +30,8 @@ namespace tcpServer
                 throw new ArgumentException();
         }
 
-        public byte Handler(string data)
-        {
-            string lhs = DataClean(data, 1);
-            string rhs = DataClean(data, 2);
-
-            if (VerifySender(lhs) != true)
-                return 0;
-            else
-            {
-
-            }
-        }
-
-        DataSet dataSet = new DataSet();
-
         private void ConnectionOpen(string procedureName)
         {
-            
             Prefernces p = new Prefernces();
             try
             {
@@ -59,24 +43,18 @@ namespace tcpServer
                     command.CommandType = CommandType.StoredProcedure;
                     command.Connection = sqlConnection1;
                     sqlConnection1.Open();
-                    using (SqlDataAdapter adapter = new SqlDataAdapter())
-                    {
-                        adapter.Fill(dataSet);
-                        adapter.Dispose();
-                    }
+
                 }
             }
             catch
             {
                 Console.WriteLine("Sql Connection Error");
             };
-            
         }
-
-        //Clean data => verify sender => get user type (student vs teacher) => 
-        public Exception ReturnVerifyError()
+        public void AddToDataTable(string deviceId, string cardId)
         {
-            return null;
+            RawDataTable r = new RawDataTable();
+            r.DT.Rows.Add(deviceId,cardId,DateTime.Now);
         }
 
         private static bool VerifySender(string input)
@@ -86,11 +64,6 @@ namespace tcpServer
                 return true;
             else
                 return false;
-        }
-
-        private static async Task DBHandler()
-        {
-            return;
         }
     }
 }

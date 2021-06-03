@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
+using System.Data;
 
 namespace tcpServer
 {
@@ -48,6 +46,17 @@ namespace tcpServer
         {
             DeviceIds = new List<string>();
             DeviceNote = new List<string>();
+        }
+    }
+
+    public class RawDataTable
+    {
+        public DataTable DT { get; set; } = new DataTable();
+        public RawDataTable()
+        {
+            DT.Columns.Add("C_DeviceID", typeof(string));
+            DT.Columns.Add("Card_ID", typeof(string));
+            DT.Columns.Add("In_Time", typeof(DateTime));
         }
     }
 }

@@ -35,14 +35,20 @@ CREATE TABLE SRRMS_DB.dbo.Class_Info(
 )
 GO
 
-CREATE TABLE SRRMS_DB.dbo.Location_Override(
-	LO_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	C_ID int NOT NULL,
-	FOREIGN KEY (C_ID) REFERENCES Class_Info(C_ID),
-	Date_Day date NOT NULL,
+CREATE TABLE SRRMS_DB.dbo.Times(
+	T_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	Period_Num tinyint NOT NULL UNIQUE,
+	Period_Time time NOT NULL,
+	Period_Day varchar(10) NOT NULL,
+)
+GO
+
+CREATE TABLE SRRMS_DB.dbo.Time_Override(
+	TO_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	Period_Num tinyint NOT NULL,
-	D_ID int NOT NULL,
-	FOREIGN KEY (D_ID) REFERENCES Devices(D_ID),
+	FOREIGN KEY(Period_Num) REFERENCES Times(Period_Num),
+	Period_Time time NOT NULL,
+	Period_Day varchar(10) NOT NULL,
 )
 GO
 
@@ -52,37 +58,36 @@ CREATE TABLE SRRMS_DB.dbo.Locations(
 	FOREIGN KEY (C_ID) REFERENCES Class_Info(C_ID),
 	Date_Day date NOT NULL,
 	Period_Num tinyint NOT NULL,
+	FOREIGN KEY(Period_Num) REFERENCES Times(Period_Num),
 	D_ID int NOT NULL,
 	FOREIGN KEY (D_ID) REFERENCES Devices(D_ID),
 )
 GO
 
+CREATE TABLE SRRMS_DB.dbo.Location_Override(
+	LO_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+	C_ID int NOT NULL,
+	FOREIGN KEY (C_ID) REFERENCES Class_Info(C_ID),
+	Date_Day date NOT NULL,
+	Period_Num tinyint NOT NULL,
+	FOREIGN KEY(Period_Num) REFERENCES Times(Period_Num),
+	D_ID int NOT NULL,
+	FOREIGN KEY (D_ID) REFERENCES Devices(D_ID),
+)
+GO
 
 CREATE TABLE SRRMS_DB.dbo.Attendence(
 	A_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	SI_ID int NOT NULL,
 	FOREIGN KEY (SI_ID) REFERENCES  Student_Info(SI_ID),
 	A_Day date,
-	A_Period_Num tinyint NOT NULL,
+	Period_Num tinyint,
+	FOREIGN KEY(Period_Num) REFERENCES Times(Period_Num),
 	A_Attended bit NOT NULL,
 	C_Description varchar(255),
 )
 GO
 
-CREATE TABLE SRRMS_DB.dbo.Times(
-	T_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	Period_Num tinyint NOT NULL UNIQUE,
-	Period_Time time NOT NULL,
-)
-GO
-
-CREATE TABLE SRRMS_DB.dbo.Time_Override(
-	TO_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
-	Period_Num tinyint NOT NULL,
-	FOREIGN KEY(Period_Num) REFERENCES Times(Period_Num),
-	Period_Time time NOT NULL,
-)
-GO
 
 CREATE TABLE SRRMS_DB.dbo.Data_Dump(
 	DD_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
