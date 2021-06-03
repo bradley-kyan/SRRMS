@@ -48,7 +48,7 @@ CREATE TABLE SRRMS_DB.dbo.Time_Override(
 	Period_Num tinyint NOT NULL,
 	FOREIGN KEY(Period_Num) REFERENCES Times(Period_Num),
 	Period_Time time NOT NULL,
-	Period_Day varchar(10) NOT NULL,
+	Period_Day date NOT NULL,
 )
 GO
 
