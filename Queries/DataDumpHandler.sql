@@ -12,4 +12,3 @@ BEGIN
 	WAITFOR DELAY '0:0:5';
     insert into [SRRMS_DB].[dbo].[Data_Dump] select * from @myTableType
 END
-
