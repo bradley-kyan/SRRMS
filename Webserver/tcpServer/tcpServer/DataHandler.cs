@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace tcpServer
 {
     public class DataHandler
     {
-        public Queue<string> DataQueue { get; set; }
+        public Queue<string> DataQueue { get; set; }//Require to add to queue since DataTable is not thread safe
 
         /// <summary>
         /// Cleans input string and returns the substring from <c>:</c> separator.
@@ -35,7 +34,6 @@ namespace tcpServer
             Prefernces p = new Prefernces();
             try
             {
-                var myStringList = new List<string>();
                 using (SqlConnection sqlConnection1 = new SqlConnection(p.ConnectionString))
                 using (SqlCommand command = new SqlCommand())
                 {
@@ -43,7 +41,6 @@ namespace tcpServer
                     command.CommandType = CommandType.StoredProcedure;
                     command.Connection = sqlConnection1;
                     sqlConnection1.Open();
-
                 }
             }
             catch
@@ -51,10 +48,23 @@ namespace tcpServer
                 Console.WriteLine("Sql Connection Error");
             };
         }
-        public void AddToDataTable(string deviceId, string cardId)
+
+        /// <summary>
+        /// Adds input data to DataTable.
+        /// </summary>
+        /// <returns><c>0</c> if successful input. <c>1</c> if string is invalid</returns>
+        public byte AddToDataTable(string RawData)
         {
+            var p = new Prefernces();
             RawDataTable r = new RawDataTable();
-            r.DT.Rows.Add(deviceId,cardId,DateTime.Now);
+            string deviceCode = DataClean(RawData, 1);
+            if (VerifySender(deviceCode) is true)
+            {
+                r.DT.Rows.Add(deviceCode, DataClean(RawData, 2), DateTime.Now);
+                return 0;
+            }
+            else
+                return 1;
         }
 
         private static bool VerifySender(string input)
