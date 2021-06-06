@@ -29,18 +29,21 @@ namespace tcpServer
                 throw new ArgumentException();
         }
 
-        private void ConnectionOpen(string procedureName)
+        private void SendTableData()
         {
             Prefernces p = new Prefernces();
+            RawDataTable r = new RawDataTable();
             try
             {
                 using (SqlConnection sqlConnection1 = new SqlConnection(p.ConnectionString))
                 using (SqlCommand command = new SqlCommand())
                 {
-                    command.CommandText = procedureName;
+                    command.CommandText = "InsertTable";
                     command.CommandType = CommandType.StoredProcedure;
                     command.Connection = sqlConnection1;
+                    command.Parameters.Add(new SqlParameter("@myTableType", r.DT));
                     sqlConnection1.Open();
+                    command.ExecuteReader();
                 }
             }
             catch

@@ -1,14 +1,18 @@
+USE SRRMS_DB
+
 CREATE TYPE [dbo].[MyTableType] AS TABLE(
-    [C_DeviceID] [varchar](max) NULL,
-	[Card_ID] [varchar](max) NULL,
+    [C_DeviceID] [char](10) NULL,
+	[Card_ID] [varchar](255) NULL,
 	[In_Time] [datetime] NULL
 )
 GO
-CREATE PROCEDURE [dbo].[InsertTable]
-    @myTableType MyTableType readonly
+
+--DROP PROCEDURE InsertTable
+--DROP TYPE MyTableType
+
+
+CREATE PROC [dbo].[InsertTable](@Table MyTableType READONLY)
 AS
 BEGIN
-	delete from [SRRMS_DB].[dbo].[Data_Dump];
-	WAITFOR DELAY '0:0:5';
-    insert into [SRRMS_DB].[dbo].[Data_Dump] select * from @myTableType
+    insert into Data_Dump (C_DeviceID,Card_ID,In_Time) select * from @Table
 END
