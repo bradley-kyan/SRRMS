@@ -42,10 +42,12 @@ namespace tcpServer
         public string ConnectionString { get; set; }
         public IList<string> DeviceIds { get; set; }
         public IList<string> DeviceNote { get; set; }
+        public IList<string> DBUpdateTime { get; set; }
         public Prefernces()
         {
             DeviceIds = new List<string>();
             DeviceNote = new List<string>();
+            DBUpdateTime = new List<string>();
         }
     }
 

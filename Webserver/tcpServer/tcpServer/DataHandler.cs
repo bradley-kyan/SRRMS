@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Threading;
+using System.Timers;
 
 namespace tcpServer
 {
@@ -17,9 +19,9 @@ namespace tcpServer
         /// <param name="rawData">Input Data</param>
         /// <para/>
         /// <c>option</c> =>
-        /// <param name="option"><c>1</c> :: Returns substring lhs, <c>2</c> :: Returns substring rhs</param>
+        /// <param name="option"><c>1</c> :: Returns lhs substring, <c>2</c> :: Returns middle substring, <c>3</c> :: Returns rhs substring</param>
         /// </summary>
-        /// <returns>LHS or RHS input string as <c>string</c></returns>
+        /// <returns>LHS, MID or RHS input string as <c>string</c></returns>
         private string DataClean(string rawData, byte option)
         {
             string[] array = rawData.Split(':');
@@ -32,8 +34,21 @@ namespace tcpServer
                 case 3:
                     return array[2];
                 default:
-                    throw new ArgumentException();
+                    return null;
             }
+        }
+
+        private void DataTimer()
+        {
+            var p = new Prefernces();
+            foreach(string time in p.DBUpdateTime)
+            {
+                var TimeDiff = DateTime.Parse(time) - DateTime.Now;
+            }
+            System.Timers.Timer timer = new System.Timers.Timer(5000);
+
+
+
         }
 
         private void SendTableData()
@@ -76,19 +91,28 @@ namespace tcpServer
 
         public void QueueHandler()
         {
-            int x = 1;
-            Monitor.Enter(x);
+            var obj = 1;
+            Monitor.Enter(obj);
             try
             {
-                bool exit = AddToDataTable(DataQueue.Dequeue());
-                if (exit == true)
-                    Monitor.Exit(x);
+                for(int i = 0; i < 2;)
+                {
+                    bool exit = AddToDataTable(DataQueue.Peek());
+                    if (exit == true)
+                    {
+                        DataQueue.Dequeue();
+                        break;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
             }
             finally
             {
-                Monitor.Exit(x);
-            }
-            
+                Monitor.Exit(obj);
+            } 
         }
 
         /// <summary>
