@@ -58,7 +58,7 @@ namespace tcpServer
             wtoken = new CancellationTokenSource();
 
             // Set the task.
-            task = CreateNeverEndingTask(now => method(), wtoken.Token);
+            //task = CreateNeverEndingTask(now => method(), wtoken.Token);
 
             // Start the task.  Post the time.
             task.Post(DateTimeOffset.Now);

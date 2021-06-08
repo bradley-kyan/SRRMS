@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading;
 
 namespace tcpServer
 {
@@ -21,12 +22,18 @@ namespace tcpServer
         /// <returns>LHS or RHS input string as <c>string</c></returns>
         private string DataClean(string rawData, byte option)
         {
-            if (option == 1)
-                return rawData[rawData.IndexOf(':')..];
-            else if (option == 2)
-                return rawData[(rawData.IndexOf(':') + 1)..];
-            else
-                throw new ArgumentException();
+            string[] array = rawData.Split(':');
+            switch (option)
+            {
+                case 1:
+                    return array[0];
+                case 2:
+                    return array[1];
+                case 3:
+                    return array[2];
+                default:
+                    throw new ArgumentException();
+            }
         }
 
         private void SendTableData()
@@ -34,40 +41,72 @@ namespace tcpServer
             Prefernces p = new Prefernces();
             RawDataTable r = new RawDataTable();
             try
-            {
-                using (SqlConnection sqlConnection1 = new SqlConnection(p.ConnectionString))
-                using (SqlCommand command = new SqlCommand())
+            {//Data Source=tpisql01.avcol.school.nz;Initial Catalog=SRRMS_DB;Integrated Security=True
+                using (SqlConnection con = new SqlConnection(p.ConnectionString))
                 {
-                    command.CommandText = "InsertTable";
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Connection = sqlConnection1;
-                    command.Parameters.Add(new SqlParameter("@myTableType", r.DT));
-                    sqlConnection1.Open();
-                    command.ExecuteReader();
+                    con.Open();
+                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(con))
+                    {
+
+                        foreach (DataColumn c in r.DT.Columns)
+                            bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
+
+                        bulkCopy.DestinationTableName = "Data_Dump";
+                        try
+                        {
+                            bulkCopy.WriteToServer(r.DT);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+
+                    }
+
+                    con.Close();
+                    Console.WriteLine($"Suceesfully sent {r.DT} to database at: {DateTime.Now}");
                 }
             }
             catch
             {
                 Console.WriteLine("Sql Connection Error");
+                
             };
+        }
+
+        public void QueueHandler()
+        {
+            int x = 1;
+            Monitor.Enter(x);
+            try
+            {
+                bool exit = AddToDataTable(DataQueue.Dequeue());
+                if (exit == true)
+                    Monitor.Exit(x);
+            }
+            finally
+            {
+                Monitor.Exit(x);
+            }
+            
         }
 
         /// <summary>
         /// Adds input data to DataTable.
         /// </summary>
-        /// <returns><c>0</c> if successful input. <c>1</c> if string is invalid</returns>
-        public byte AddToDataTable(string RawData)
+        /// <returns><c>True</c> if successful execution. <c>Fasle</c> if unsuccessful</returns>
+        public bool AddToDataTable(string RawData)
         {
             var p = new Prefernces();
             RawDataTable r = new RawDataTable();
             string deviceCode = DataClean(RawData, 1);
             if (VerifySender(deviceCode) is true)
             {
-                r.DT.Rows.Add(deviceCode, DataClean(RawData, 2), DateTime.Now);
-                return 0;
+                r.DT.Rows.Add(deviceCode, DataClean(RawData, 2), DataClean(RawData, 3));
+                return true;
             }
             else
-                return 1;
+                return false;
         }
 
         private static bool VerifySender(string input)
