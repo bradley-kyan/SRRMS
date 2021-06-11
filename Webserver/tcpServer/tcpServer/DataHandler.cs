@@ -37,21 +37,57 @@ namespace tcpServer
                     return null;
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         private void DataTimer()
         {
             var p = new Prefernces();
-            foreach(string time in p.DBUpdateTime)
+            string update = p.DBUpdateTime;
+
+            System.Timers.Timer _timer = new System.Timers.Timer()
             {
-                var TimeDiff = DateTime.Parse(time) - DateTime.Now;
-            }
-            System.Timers.Timer timer = new System.Timers.Timer(5000);
-
-
+                AutoReset = true,
+                Enabled = true,
+                Interval = TimeSpan.FromSeconds(ParseTimeTOSeconds(update)).TotalMilliseconds
+            };
+            _timer.Elapsed += SendTableData;
 
         }
 
-        private void SendTableData()
+        /// <summary>
+        /// Parses time as:  
+        /// <list type="bullet"><item>seconds (s)</item><item>minutes (m)</item><item>hours (h)</item></list>
+        /// to seconds.
+        /// </summary>
+        /// <returns>Seconds as <c>long</c> datatype</returns>
+        public long ParseTimeTOSeconds(string time)
+        {
+            long secR;
+            if (time.Contains("s") || time.Contains("S"))
+            {
+                var sRem = time.Replace("s", "").Replace("S","");
+                return Convert.ToInt64(sRem);
+            }
+            else if(time.Contains("m") || time.Contains("m"))
+            {
+                var mRem = time.Replace("m", "").Replace("M", "");
+                secR = Convert.ToInt64(mRem) * 60;
+                return secR;
+            }   
+            else if(time.Contains("h") || time.Contains("H"))
+            {
+                var mRem = time.Replace("m", "").Replace("M", "");
+                secR = Convert.ToInt64(mRem) * 60^2;
+                return secR;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private void SendTableData(object source, EventArgs e)
         {
             Prefernces p = new Prefernces();
             RawDataTable r = new RawDataTable();
@@ -85,7 +121,7 @@ namespace tcpServer
             catch
             {
                 Console.WriteLine("Sql Connection Error");
-                
+
             };
         }
 
@@ -95,7 +131,7 @@ namespace tcpServer
             Monitor.Enter(obj);
             try
             {
-                for(int i = 0; i < 2;)
+                for (int i = 0; i < 2;)
                 {
                     bool exit = AddToDataTable(DataQueue.Peek());
                     if (exit == true)
@@ -112,7 +148,7 @@ namespace tcpServer
             finally
             {
                 Monitor.Exit(obj);
-            } 
+            }
         }
 
         /// <summary>
