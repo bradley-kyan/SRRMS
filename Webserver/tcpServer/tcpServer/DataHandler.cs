@@ -11,7 +11,6 @@ namespace tcpServer
     public class DataHandler
     {
         public Queue<string> DataQueue { get; set; }//Require to add to queue since DataTable is not thread safe
-
         /// <summary>
         /// Cleans input string and returns the substring from <c>:</c> separator.
         /// <para />
@@ -38,26 +37,37 @@ namespace tcpServer
             }
         }
         /// <summary>
-        /// 
+        /// Starts timer with an interval predefined from p.DBUpdateTime. Updates SQL DB at defined time.
         /// </summary>
-        private void DataTimer()
+        public void DBTimerContext()
         {
             var p = new Prefernces();
             string update = p.DBUpdateTime;
 
-            System.Timers.Timer _timer = new System.Timers.Timer()
+            System.Timers.Timer _t = new System.Timers.Timer()
             {
                 AutoReset = true,
                 Enabled = true,
                 Interval = TimeSpan.FromSeconds(ParseTimeTOSeconds(update)).TotalMilliseconds
             };
-            _timer.Elapsed += SendTableData;
-
+            _t.Elapsed += SendTableData;
         }
-
+        /// <summary>
+        /// Stars timer to run QueueHandler with an interval of 1ms
+        /// </summary>
+        public void QueueTimerContext()
+        {
+            System.Timers.Timer _t = new System.Timers.Timer()
+            {
+                AutoReset = true,
+                Enabled = true,
+                Interval = 1
+            };
+            _t.Elapsed += QueueHandler;
+        }
         /// <summary>
         /// Parses time as:  
-        /// <list type="bullet"><item>seconds (s)</item><item>minutes (m)</item><item>hours (h)</item></list>
+        /// <list type="bullet"><item>seconds (<c>s</c>)</item><item>minutes (<c>m</c>)</item><item>hours (<c>h</c>)</item></list>
         /// to seconds.
         /// </summary>
         /// <returns>Seconds as <c>long</c> datatype</returns>
@@ -86,19 +96,17 @@ namespace tcpServer
                 return 0;
             }
         }
-
         private void SendTableData(object source, EventArgs e)
         {
             Prefernces p = new Prefernces();
             RawDataTable r = new RawDataTable();
             try
-            {//Data Source=tpisql01.avcol.school.nz;Initial Catalog=SRRMS_DB;Integrated Security=True
+            {
                 using (SqlConnection con = new SqlConnection(p.ConnectionString))
                 {
                     con.Open();
                     using (SqlBulkCopy bulkCopy = new SqlBulkCopy(con))
                     {
-
                         foreach (DataColumn c in r.DT.Columns)
                             bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
 
@@ -111,9 +119,7 @@ namespace tcpServer
                         {
                             Console.WriteLine(ex.Message);
                         }
-
                     }
-
                     con.Close();
                     Console.WriteLine($"Suceesfully sent {r.DT} to database at: {DateTime.Now}");
                 }
@@ -121,11 +127,9 @@ namespace tcpServer
             catch
             {
                 Console.WriteLine("Sql Connection Error");
-
             };
         }
-
-        public void QueueHandler()
+        private void QueueHandler(object source, EventArgs e)
         {
             var obj = 1;
             Monitor.Enter(obj);
@@ -150,7 +154,6 @@ namespace tcpServer
                 Monitor.Exit(obj);
             }
         }
-
         /// <summary>
         /// Adds input data to DataTable.
         /// </summary>
@@ -168,7 +171,6 @@ namespace tcpServer
             else
                 return false;
         }
-
         private static bool VerifySender(string input)
         {
             Prefernces p = new Prefernces();
