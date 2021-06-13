@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Timers;
 using System.IO;
 using System.Reflection;
-using System.Drawing.Imaging;
-using System.Drawing;
 using System.Threading;
-using System.Text.Json;
-using System.Collections;
-using System.Linq;
+using System.Data;
 
 namespace tcpServer
 {
@@ -48,10 +42,23 @@ namespace tcpServer
         public string ConnectionString { get; set; }
         public IList<string> DeviceIds { get; set; }
         public IList<string> DeviceNote { get; set; }
+        public string DBUpdateTime { get; set; }
         public Prefernces()
         {
             DeviceIds = new List<string>();
             DeviceNote = new List<string>();
         }
     }
+
+    public class RawDataTable
+    {
+        public DataTable DT { get; set; } = new DataTable();
+        public RawDataTable()
+        {
+            DT.Columns.Add("C_DeviceID", typeof(string));
+            DT.Columns.Add("Card_ID", typeof(string));
+            DT.Columns.Add("In_Time", typeof(DateTime));
+        }
+    }
 }
+
