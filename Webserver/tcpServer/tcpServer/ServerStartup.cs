@@ -3,6 +3,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Buffers.Text;
 
 namespace tcpServer
 {
@@ -34,12 +35,13 @@ namespace tcpServer
 
         public static void StartListening()
         {
+            var p = new Prefernces();
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
             // running the listener is "host.contoso.com".  
-            IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(p.DNSEntery);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, p.LocalEndpoint);
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily,
@@ -94,6 +96,7 @@ namespace tcpServer
 
         public static void ReadCallback(IAsyncResult ar)
         {
+            var dtHandler = new DataHandler();
             String content = String.Empty;
 
             // Retrieve the state object and the handler socket  
@@ -108,20 +111,14 @@ namespace tcpServer
             {
                 // There might be more data, so store the data received so far.  
                 state.sb.Append(Encoding.ASCII.GetString(
-                    state.buffer, 0, bytesRead));
-
+                    state.buffer, 0, bytesRead)); 
                 // Check for end-of-file tag. If it is not there, read
                 // more data.  
                 content = state.sb.ToString();
-
-                if (content.IndexOf("\n") > -1 && (content.Split('>')[0] == "11111"))
+                if (content.IndexOf(";;EOF") > -1)
                 {
-                    // All the data has been read from the
-                    // client. Display it on the console.  
-                    Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                    content.Length, content.Split('>')[1]);
-                    // Echo the data back to the client.  
-                    Send(handler, $"{content.Split('>')[1]}");
+                    dtHandler.DataQueue.Enqueue(content.Replace(";;EOF", ""));
+                    Send(handler, $"200 OK");
                 }
                 else if ((content.Split('>')[0] != "11111") && content.IndexOf("\n") > -1)
                 {
