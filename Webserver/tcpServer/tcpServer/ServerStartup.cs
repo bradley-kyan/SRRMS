@@ -123,7 +123,7 @@ namespace tcpServer
                     // Echo the data back to the client.  
                     Send(handler, $"{content.Split('>')[1]}");
                 }
-                else if (((content.Split('>')[0] != "11111") && content.IndexOf("\n") > -1))
+                else if ((content.Split('>')[0] != "11111") && content.IndexOf("\n") > -1)
                 {
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
                     Send(handler, "403 Forbidden");
