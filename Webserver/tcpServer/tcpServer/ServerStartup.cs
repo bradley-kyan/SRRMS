@@ -41,9 +41,13 @@ namespace tcpServer
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
             // running the listener is "host.contoso.com".
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(new Prefernces().DnsEntry);
+            IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Convert.ToInt32(new Prefernces().LocalEndpoint));
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 29882);
+
+            Console.Clear();
+            new DevicePref().Header(1);
+            Console.WriteLine($"Server started on {ipHostInfo.HostName}({ipAddress}):{localEndPoint.Port}");
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily,
@@ -52,6 +56,7 @@ namespace tcpServer
             // Bind the socket to the local endpoint and listen for incoming connections.  
             try
             {
+
                 listener.Bind(localEndPoint);
                 listener.Listen(100);
 
@@ -121,12 +126,12 @@ namespace tcpServer
                 if (content.IndexOf(";;EOF") > -1)
                 {
                     dtHandler.DataQueue.Enqueue(content.Replace(";;EOF", ""));
-                    Send(handler, $"200 OK");
+                    Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");
                 }
-                else if (!p.DeviceIds.Contains(content.Split(':')[0]))
+                else if (p.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
-                    Send(handler, "403 Forbidden");
+                    Send(handler, $"HTTP/1.1 403 Forbidden\nDate: {DateTime.Now}");
                 }
                 else
                 {
@@ -155,7 +160,7 @@ namespace tcpServer
 
                 // Complete sending the data to the remote device.  
                 int bytesSent = handler.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to client.", bytesSent);
+                Console.WriteLine("Sent {0} bytes to client >> {1}", bytesSent, handler.RemoteEndPoint);
 
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();

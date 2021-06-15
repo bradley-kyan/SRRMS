@@ -121,15 +121,37 @@ namespace tcpServer
                 Console.WriteLine("Sql Connection Error");
             };
         }
-        public void QueueHandler()
+        /// <summary>
+        /// Stars timer to run QueueHandler with an interval of 1ms
+        /// </summary>
+        public void QueueTimerContext()
         {
-            var obj = 1;
+            System.Timers.Timer _t = new System.Timers.Timer()
+            {
+                AutoReset = true,
+                Enabled = true,
+                Interval = 1
+            };
+            _t.Elapsed += QueueHandler;
+        }
+
+        public void QueueHandler(object thisobj, EventArgs e)
+        {
+            object obj = new object();
             Monitor.Enter(obj);
             try
             {
                 for (int i = 0; i < 2;)
                 {
-                    bool exit = AddToDataTable(DataQueue.Peek());
+                    bool exit;
+                    try 
+                    {
+                        exit = AddToDataTable(DataQueue.Peek());
+                    }
+                    catch
+                    {
+                        exit = false;
+                    }
                     if (exit == true)
                     {
                         DataQueue.Dequeue();
