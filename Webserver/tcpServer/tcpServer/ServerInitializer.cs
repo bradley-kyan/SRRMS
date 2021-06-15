@@ -13,7 +13,6 @@ namespace tcpServer
             Console.WriteLine("Initalising...");
             StartWork();
             AsynchronousSocketListener.StartListening();
-
         }
         ITargetBlock<DateTimeOffset> CreateNeverEndingTask(
         Action<DateTimeOffset> action, CancellationToken cancellationToken)

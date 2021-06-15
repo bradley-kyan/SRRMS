@@ -1,14 +1,10 @@
 {
-  "UpdateTime": "2021-06-15T12:29:22.3910487+12:00",
-  "DbType": "MSSQL",
-  "ConnectionString": "qweratyuio",
-  "DNSEntry": "localhost",
-  "LocalEndpoint": "1056",
-  "DeviceIds": [
-    "teaafvsh16"
-  ],
-  "DeviceNote": [
-    "teaafvsh16  --  null"
-  ],
+  "UpdateTime": "2021-06-15T22:03:45.6915303+12:00",
+  "DbType": null,
+  "ConnectionString": null,
+  "DnsEntry": null,
+  "LocalEndpoint": null,
+  "DeviceIds": [],
+  "DeviceNote": [],
   "DBUpdateTime": null
 }

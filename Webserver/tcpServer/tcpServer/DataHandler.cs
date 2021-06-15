@@ -11,7 +11,10 @@ namespace tcpServer
     public class DataHandler
     {
         public Queue<string> DataQueue { get; set; }//Require to add to queue since DataTable is not thread safe
-        Queue<string> queue = new Queue<string>();
+        public DataHandler()
+        {
+            DataQueue = new Queue<string>();
+        }
         /// <summary>
         /// Cleans input string and returns the substring from <c>:</c> separator.
         /// <para />
@@ -126,10 +129,10 @@ namespace tcpServer
             {
                 for (int i = 0; i < 2;)
                 {
-                    bool exit = AddToDataTable(queue.Peek());
+                    bool exit = AddToDataTable(DataQueue.Peek());
                     if (exit == true)
                     {
-                        queue.Dequeue();
+                        DataQueue.Dequeue();
                         break;
                     }
                     else

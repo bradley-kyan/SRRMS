@@ -27,7 +27,9 @@ namespace tcpServer
 
     public class AsynchronousSocketListener
     {
+        public Prefernces p = new Prefernces();
         
+
         // Thread signal.  
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
@@ -36,13 +38,12 @@ namespace tcpServer
         }
         public static void StartListening()
         {
-            Prefernces pref = new Prefernces();
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
-            // running the listener is "host.contoso.com".  
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(pref.DNSEntry);
+            // running the listener is "host.contoso.com".
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(new Prefernces().DnsEntry);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Convert.ToInt32(pref.LocalEndpoint));
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Convert.ToInt32(new Prefernces().LocalEndpoint));
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily,
