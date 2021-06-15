@@ -4,14 +4,17 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 namespace tcpServer
 {
-    internal class ServerInitializer : DevicePref
+    public class ServerInitializer : DevicePref
     {
         internal void Initializer()
         {
             Header(1);
+            Thread.Sleep(1000);
             Console.WriteLine("Initalising...");
-        }
+            StartWork();
+            AsynchronousSocketListener.StartListening();
 
+        }
         ITargetBlock<DateTimeOffset> CreateNeverEndingTask(
         Action<DateTimeOffset> action, CancellationToken cancellationToken)
         {
@@ -51,14 +54,14 @@ namespace tcpServer
 
         CancellationTokenSource wtoken;
         ActionBlock<DateTimeOffset> task;
-
+        DataHandler dataHandler = new DataHandler();
         void StartWork()
         {
             // Create the token source.
             wtoken = new CancellationTokenSource();
 
             // Set the task.
-            //task = CreateNeverEndingTask(now => method(), wtoken.Token);
+            task = (ActionBlock<DateTimeOffset>)CreateNeverEndingTask(now => dataHandler.QueueHandler(), wtoken.Token);
 
             // Start the task.  Post the time.
             task.Post(DateTimeOffset.Now);

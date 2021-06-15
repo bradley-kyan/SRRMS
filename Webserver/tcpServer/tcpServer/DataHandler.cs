@@ -11,6 +11,7 @@ namespace tcpServer
     public class DataHandler
     {
         public Queue<string> DataQueue { get; set; }//Require to add to queue since DataTable is not thread safe
+        Queue<string> queue = new Queue<string>();
         /// <summary>
         /// Cleans input string and returns the substring from <c>:</c> separator.
         /// <para />
@@ -52,19 +53,7 @@ namespace tcpServer
             };
             _t.Elapsed += SendTableData;
         }
-        /// <summary>
-        /// Stars timer to run QueueHandler with an interval of 1ms
-        /// </summary>
-        public void QueueTimerContext()
-        {
-            System.Timers.Timer _t = new System.Timers.Timer()
-            {
-                AutoReset = true,
-                Enabled = true,
-                Interval = 1
-            };
-            _t.Elapsed += QueueHandler;
-        }
+
         /// <summary>
         /// Parses time as:  
         /// <list type="bullet"><item>seconds (<c>s</c>)</item><item>minutes (<c>m</c>)</item><item>hours (<c>h</c>)</item></list>
@@ -129,7 +118,7 @@ namespace tcpServer
                 Console.WriteLine("Sql Connection Error");
             };
         }
-        private void QueueHandler(object source, EventArgs e)
+        public void QueueHandler()
         {
             var obj = 1;
             Monitor.Enter(obj);
@@ -137,10 +126,10 @@ namespace tcpServer
             {
                 for (int i = 0; i < 2;)
                 {
-                    bool exit = AddToDataTable(DataQueue.Peek());
+                    bool exit = AddToDataTable(queue.Peek());
                     if (exit == true)
                     {
-                        DataQueue.Dequeue();
+                        queue.Dequeue();
                         break;
                     }
                     else

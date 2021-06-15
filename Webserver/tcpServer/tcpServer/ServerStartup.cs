@@ -23,25 +23,26 @@ namespace tcpServer
         // Client socket.
         public Socket workSocket = null;
     }
+   
 
     public class AsynchronousSocketListener
     {
+        
         // Thread signal.  
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
         public AsynchronousSocketListener()
         {
         }
-
         public static void StartListening()
         {
-            var p = new Prefernces();
+            Prefernces pref = new Prefernces();
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
             // running the listener is "host.contoso.com".  
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(p.DNSEntery);
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(pref.DNSEntry);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, p.LocalEndpoint);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, Convert.ToInt32(pref.LocalEndpoint));
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily,
@@ -96,6 +97,7 @@ namespace tcpServer
 
         public static void ReadCallback(IAsyncResult ar)
         {
+            var p = new Prefernces();
             var dtHandler = new DataHandler();
             String content = String.Empty;
 
@@ -120,14 +122,14 @@ namespace tcpServer
                     dtHandler.DataQueue.Enqueue(content.Replace(";;EOF", ""));
                     Send(handler, $"200 OK");
                 }
-                else if ((content.Split('>')[0] != "11111") && content.IndexOf("\n") > -1)
+                else if (!p.DeviceIds.Contains(content.Split(':')[0]))
                 {
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
                     Send(handler, "403 Forbidden");
                 }
                 else
                 {
-                    // Not all data received. Get more.  
+                    // Not all data received. Get more.
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
                 }

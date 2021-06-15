@@ -38,11 +38,12 @@ namespace tcpServer
         public DateTime UpdateTime { get; set; }
         public string DbType { get; set; }
         public string ConnectionString { get; set; }
+        public string DNSEntry { get; set; }
+        public string LocalEndpoint { get; set; }
         public IList<string> DeviceIds { get; set; }
         public IList<string> DeviceNote { get; set; }
         public string DBUpdateTime { get; set; }
-        public string DNSEntery { get; set; }
-        public int LocalEndpoint { get; set; }
+        
         public Prefernces()
         {
             DeviceIds = new List<string>();
