@@ -38,26 +38,26 @@ namespace tcpServer
         }
         public static void StartListening()
         {
+            int portNum = 29882;
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
             // running the listener is "host.contoso.com".
             IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 29882);
-
-            Console.Clear();
-            new DevicePref().Header(1);
-            Console.WriteLine($"Server started on {ipHostInfo.HostName}({ipAddress}):{localEndPoint.Port}");
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, portNum);
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);
-
+            Retry:
             // Bind the socket to the local endpoint and listen for incoming connections.  
             try
             {
-
                 listener.Bind(localEndPoint);
+                Console.Clear();
+                new DevicePref().Header(1);
+                Console.WriteLine($"Server started on {ipHostInfo.HostName}({ipAddress}):{localEndPoint.Port}\n");
+
                 listener.Listen(100);
 
                 while (true)
@@ -73,16 +73,17 @@ namespace tcpServer
                     // Wait until a connection is made before continuing.  
                     allDone.WaitOne();
                 }
-
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.Clear();
+                new DevicePref().Header(1);
+                Console.WriteLine(e.ToString() + $"\n\nTrying to bind port to port {portNum}");
+                portNum++;
+                Thread.Sleep(1500);
+                localEndPoint = new IPEndPoint(ipAddress, portNum);
+                goto Retry;
             }
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
-
         }
 
         public static void AcceptCallback(IAsyncResult ar)
