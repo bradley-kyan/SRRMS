@@ -3,6 +3,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Buffers.Text;
 
 namespace tcpServer
 {
@@ -22,33 +23,41 @@ namespace tcpServer
         // Client socket.
         public Socket workSocket = null;
     }
+   
 
     public class AsynchronousSocketListener
     {
+        public Prefernces p = new Prefernces();
+        
+
         // Thread signal.  
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
         public AsynchronousSocketListener()
         {
         }
-
         public static void StartListening()
         {
+            int portNum = 29882;
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
-            // running the listener is "host.contoso.com".  
+            // running the listener is "host.contoso.com".
             IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, portNum);
 
             // Create a TCP/IP socket.  
             Socket listener = new Socket(ipAddress.AddressFamily,
                 SocketType.Stream, ProtocolType.Tcp);
-
+            Retry:
             // Bind the socket to the local endpoint and listen for incoming connections.  
             try
             {
                 listener.Bind(localEndPoint);
+                Console.Clear();
+                new DevicePref().Header(1);
+                Console.WriteLine($"Server started on {ipHostInfo.HostName}({ipAddress}):{localEndPoint.Port}\n");
+
                 listener.Listen(100);
 
                 while (true)
@@ -64,16 +73,17 @@ namespace tcpServer
                     // Wait until a connection is made before continuing.  
                     allDone.WaitOne();
                 }
-
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.Clear();
+                new DevicePref().Header(1);
+                Console.WriteLine(e.ToString() + $"\n\nTrying to bind port to port {portNum}");
+                portNum++;
+                Thread.Sleep(1500);
+                localEndPoint = new IPEndPoint(ipAddress, portNum);
+                goto Retry;
             }
-
-            Console.WriteLine("\nPress ENTER to continue...");
-            Console.Read();
-
         }
 
         public static void AcceptCallback(IAsyncResult ar)
@@ -94,6 +104,8 @@ namespace tcpServer
 
         public static void ReadCallback(IAsyncResult ar)
         {
+            var p = new Prefernces();
+            var dtHandler = new DataHandler();
             String content = String.Empty;
 
             // Retrieve the state object and the handler socket  
@@ -108,29 +120,23 @@ namespace tcpServer
             {
                 // There might be more data, so store the data received so far.  
                 state.sb.Append(Encoding.ASCII.GetString(
-                    state.buffer, 0, bytesRead));
-
+                    state.buffer, 0, bytesRead)); 
                 // Check for end-of-file tag. If it is not there, read
                 // more data.  
                 content = state.sb.ToString();
-
-                if (content.IndexOf("\n") > -1 && (content.Split('>')[0] == "11111"))
+                if (content.IndexOf(";;EOF") > -1)
                 {
-                    // All the data has been read from the
-                    // client. Display it on the console.  
-                    Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                    content.Length, content.Split('>')[1]);
-                    // Echo the data back to the client.  
-                    Send(handler, $"{content.Split('>')[1]}");
+                    dtHandler.DataQueue.Enqueue(content.Replace(";;EOF", ""));
+                    Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");
                 }
-                else if (((content.Split('>')[0] != "11111") && content.IndexOf("\n") > -1))
+                else if (p.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
-                    Send(handler, "403 Forbidden");
+                    Send(handler, $"HTTP/1.1 403 Forbidden\nDate: {DateTime.Now}");
                 }
                 else
                 {
-                    // Not all data received. Get more.  
+                    // Not all data received. Get more.
                     handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReadCallback), state);
                 }
@@ -155,7 +161,7 @@ namespace tcpServer
 
                 // Complete sending the data to the remote device.  
                 int bytesSent = handler.EndSend(ar);
-                Console.WriteLine("Sent {0} bytes to client.", bytesSent);
+                Console.WriteLine("Sent {0} bytes to client >> {1}", bytesSent, handler.RemoteEndPoint);
 
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();

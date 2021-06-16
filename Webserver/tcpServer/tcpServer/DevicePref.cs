@@ -44,6 +44,7 @@ namespace tcpServer
 
             Header(2);
             ConsoleKeyInfo info = Console.ReadKey(true);
+            Deserializer();
 
             switch (info.Key)
             {

@@ -12,7 +12,6 @@ namespace tcpServer
         public const string options = " 1: Setup\n 2: Devices\n 3: Start server\n_____________________________\n\n F12: Exit";
         public static string currentPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static string pLocate = currentPath + "/preferences.json";
-
         public static void startup()
         {
             DevicePref s = new DevicePref();
@@ -34,22 +33,22 @@ namespace tcpServer
 
         }
     }
-
     public class Prefernces
     {
         public DateTime UpdateTime { get; set; }
         public string DbType { get; set; }
         public string ConnectionString { get; set; }
+        public string LocalEndpoint { get; set; }
         public IList<string> DeviceIds { get; set; }
         public IList<string> DeviceNote { get; set; }
         public string DBUpdateTime { get; set; }
+        
         public Prefernces()
         {
             DeviceIds = new List<string>();
             DeviceNote = new List<string>();
         }
     }
-
     public class RawDataTable
     {
         public DataTable DT { get; set; } = new DataTable();

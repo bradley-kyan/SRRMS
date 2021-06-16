@@ -1,7 +1,15 @@
 {
-  "UpdateTime": "2021-06-08T11:53:49.8756387+12:00",
+  "UpdateTime": "2021-06-17T09:38:55.9168135+12:00",
   "DbType": "MSSQL",
-  "ConnectionString": null,
-  "DeviceIds": [],
-  "DeviceNote": []
+  "ConnectionString": "Server=tpisql01.avcol.school.nz;Database=SRRMS_DB;Trusted_Connection=True;",
+  "LocalEndpoint": "1056",
+  "DeviceIds": [
+    "jdv17agymv",
+    "yeuah1b234"
+  ],
+  "DeviceNote": [
+    "jdv17agymv  --  null",
+    "yeuah1b234  --  null"
+  ],
+  "DBUpdateTime": "1s"
 }
