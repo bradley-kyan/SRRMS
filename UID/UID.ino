@@ -2,6 +2,7 @@
 #include <MFRC522.h>
 #include <Wire.h>
 #include <LiquidCrystal.h>
+#include <Ethernet.h>
 
 #define RST_PIN         9          // Configurable, see typical pin layout above
 #define SS_PIN          8         // Configurable, see typical pin layout above
@@ -9,6 +10,13 @@
 int errorDelay = 1000;
 int successDelay = 200;
 
+// Enter a MAC address and IP address for your controller below.
+// The IP address will be dependent on your local network:
+byte mac[] = {
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
+};
+
+EthernetClient client;
 String lastUid;
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
@@ -26,7 +34,9 @@ Serial.begin(9600);   // Initialize serial communications with the PC
   
 	mfrc522.PCD_Init();		// Init MFRC522
   Serial.println("Successfully initalized");
-	delay(200);				// Optional delay. Some board do need more time after init to be ready, see Readme
+	delay(200);
+
+    Ethernet.begin(mac);
 }
 
   String getID(){
@@ -81,3 +91,4 @@ void loop() {
     delay(1000);
   }
 }
+
