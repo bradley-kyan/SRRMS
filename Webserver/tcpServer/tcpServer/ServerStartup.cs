@@ -128,11 +128,13 @@ namespace tcpServer
                 {
                     dtHandler.DataQueue.Enqueue(content.Replace(";;EOF", ""));
                     Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");
+                    handler.Close();
                 }
                 else if (p.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
                     Send(handler, $"HTTP/1.1 403 Forbidden\nDate: {DateTime.Now}");
+                    handler.Close();
                 }
                 else
                 {
