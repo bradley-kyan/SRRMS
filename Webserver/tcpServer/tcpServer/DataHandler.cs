@@ -68,19 +68,19 @@ namespace tcpServer
             long secR;
             if (time.Contains("s") || time.Contains("S"))
             {
-                var sRem = time.Replace("s", "").Replace("S","");
+                var sRem = time.Replace("s", "").Replace("S", "");
                 return Convert.ToInt64(sRem);
             }
-            else if(time.Contains("m") || time.Contains("m"))
+            else if (time.Contains("m") || time.Contains("m"))
             {
                 var mRem = time.Replace("m", "").Replace("M", "");
                 secR = Convert.ToInt64(mRem) * 60;
                 return secR;
-            }   
-            else if(time.Contains("h") || time.Contains("H"))
+            }
+            else if (time.Contains("h") || time.Contains("H"))
             {
                 var mRem = time.Replace("m", "").Replace("M", "");
-                secR = Convert.ToInt64(mRem) * 60^2;
+                secR = Convert.ToInt64(mRem) * 60 ^ 2;
                 return secR;
             }
             else
@@ -137,36 +137,39 @@ namespace tcpServer
 
         public void QueueHandler(object thisobj, EventArgs e)
         {
-            object obj = new object();
-            Monitor.Enter(obj);
-            try
-            {
-                for (int i = 0; i < 2;)
+            lock (this)
+                try
                 {
-                    bool exit;
-                    try 
+                    if (DataQueue.Count != 0)
                     {
-                        exit = AddToDataTable(DataQueue.Peek());
-                    }
-                    catch
-                    {
-                        exit = false;
-                    }
-                    if (exit == true)
-                    {
-                        DataQueue.Dequeue();
-                        break;
+                        for (int i = 0; i < 2;)
+                        {
+                            bool exit = false;
+                            try
+                            {
+                                exit = AddToDataTable(DataQueue.Peek());
+                            }
+                            catch { }
+                            if (exit == true)
+                            {
+                                DataQueue.Dequeue();
+                                break;
+                            }
+                            else
+                            {
+                                i++;
+                            }
+                        }
                     }
                     else
                     {
-                        i++;
+                        return;
                     }
                 }
-            }
-            finally
-            {
-                Monitor.Exit(obj);
-            }
+                catch
+                {
+                    return;
+                }
         }
         /// <summary>
         /// Adds input data to DataTable.

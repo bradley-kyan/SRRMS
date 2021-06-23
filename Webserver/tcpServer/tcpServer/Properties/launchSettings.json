@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "tcpServer": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

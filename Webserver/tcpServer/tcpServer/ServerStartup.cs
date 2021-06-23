@@ -56,7 +56,7 @@ namespace tcpServer
                 listener.Bind(localEndPoint);
                 Console.Clear();
                 new DevicePref().Header(1);
-                Console.WriteLine($"Server started on {ipHostInfo.HostName}({ipAddress}):{localEndPoint.Port}\n");
+                Console.WriteLine($"Server started on {ipHostInfo.HostName}({ipAddress}):{localEndPoint.Port}\n\n\n");
 
                 listener.Listen(100);
 
@@ -128,11 +128,14 @@ namespace tcpServer
                 {
                     dtHandler.DataQueue.Enqueue(content.Replace(";;EOF", ""));
                     Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");
+                    handler.Close();
                 }
                 else if (p.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
+                    ClearLastLine();
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
                     Send(handler, $"HTTP/1.1 403 Forbidden\nDate: {DateTime.Now}");
+                    handler.Close();
                 }
                 else
                 {
@@ -171,6 +174,12 @@ namespace tcpServer
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+        public static void ClearLastLine()
+        {
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
         }
     }
 }
