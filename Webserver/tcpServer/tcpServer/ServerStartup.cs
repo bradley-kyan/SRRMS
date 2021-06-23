@@ -28,7 +28,8 @@ namespace tcpServer
     public class AsynchronousSocketListener
     {
         public Prefernces p = new Prefernces();
-        
+
+        public string bound;
 
         // Thread signal.  
         public static ManualResetEvent allDone = new ManualResetEvent(false);
@@ -57,6 +58,7 @@ namespace tcpServer
                 Console.Clear();
                 new DevicePref().Header(1);
                 Console.WriteLine($"Server started on {ipHostInfo.HostName}({ipAddress}):{localEndPoint.Port}\n\n\n");
+                new AsynchronousSocketListener().bound = $"Server started on {ipHostInfo.HostName}({ipAddress}):{localEndPoint.Port}\n\n\n";
 
                 listener.Listen(100);
 
@@ -132,7 +134,9 @@ namespace tcpServer
                 }
                 else if (p.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
-                    ClearLastLine();
+                    Console.Clear();
+                    new DevicePref().Header(1);
+                    Console.WriteLine(new AsynchronousSocketListener().bound);
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
                     Send(handler, $"HTTP/1.1 403 Forbidden\nDate: {DateTime.Now}");
                     handler.Close();
