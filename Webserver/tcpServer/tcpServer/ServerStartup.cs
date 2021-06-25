@@ -135,7 +135,7 @@ namespace tcpServer
                 else if (p.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
                     Console.Clear();
-                    new DevicePref().Header(1);
+
                     Console.WriteLine(new AsynchronousSocketListener().bound);
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
                     Send(handler, $"HTTP/1.1 403 Forbidden\nDate: {DateTime.Now}");
