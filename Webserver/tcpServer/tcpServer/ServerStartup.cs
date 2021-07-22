@@ -43,8 +43,8 @@ namespace tcpServer
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
             // running the listener is "host.contoso.com".
-            IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+            IPAddress ipAddress = Array.Find(ipHostInfo.AddressList, a => a.AddressFamily == AddressFamily.InterNetwork);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, portNum);
 
             // Create a TCP/IP socket.  
@@ -126,9 +126,9 @@ namespace tcpServer
                 // Check for end-of-file tag. If it is not there, read
                 // more data.  
                 content = state.sb.ToString();
-                if (content.IndexOf(";;EOF") > -1)
+                if (content.IndexOf("<EOF>") > -1)
                 {
-                    dtHandler.DataQueue.Enqueue(content.Replace(";;EOF", ""));
+                    dtHandler.DataQueue.Enqueue(content.Replace("<EOF>", ""));
                     Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");
                     handler.Close();
                 }
@@ -158,7 +158,7 @@ namespace tcpServer
             handler.BeginSend(byteData, 0, byteData.Length, 0,
                 new AsyncCallback(SendCallback), handler);
         }
-
+        public static byte clear = 0;
         private static void SendCallback(IAsyncResult ar)
         {
             try
@@ -168,10 +168,15 @@ namespace tcpServer
 
                 // Complete sending the data to the remote device.  
                 int bytesSent = handler.EndSend(ar);
+                clear++;
+                if (clear == 11)
+                    ClearLastLine();
                 Console.WriteLine("Sent {0} bytes to client >> {1}", bytesSent, handler.RemoteEndPoint);
-
+                Thread.Sleep(50);
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
+                handler.Dispose();
+                
 
             }
             catch (Exception e)
@@ -184,6 +189,25 @@ namespace tcpServer
             Console.SetCursorPosition(0, Console.CursorTop - 1);
             Console.Write(new string(' ', Console.BufferWidth));
             Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+            Console.Write(new string(' ', Console.BufferWidth));
+            Console.SetCursorPosition(0, Console.CursorTop - 0);
+            clear = 1;
         }
     }
 }
