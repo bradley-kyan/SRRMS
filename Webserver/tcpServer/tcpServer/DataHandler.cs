@@ -52,7 +52,7 @@ namespace tcpServer
             {
                 AutoReset = true,
                 Enabled = true,
-                Interval = TimeSpan.FromSeconds(ParseTimeTOSeconds(update)).TotalMilliseconds
+                Interval = 2000//TimeSpan.FromSeconds(ParseTimeTOSeconds(update)).TotalMilliseconds
             };
             _t.Elapsed += SendTableData;
         }

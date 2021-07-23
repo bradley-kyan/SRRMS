@@ -72,7 +72,7 @@ namespace tcpServer
                     break;
             }
         }
-        internal string Serializer()//Writes data to file
+        public string Serializer()//Writes data to file
         {
             Header(1);
             lock (this)
@@ -97,7 +97,7 @@ namespace tcpServer
             }
 
         }
-        internal string Deserializer()//Gets data from file
+        public string Deserializer()//Gets data from file
         {
             Header(1);
             lock (this)
