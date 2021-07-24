@@ -5,11 +5,8 @@
 #include <EthernetUdp.h>
 #include <TimeLib.h>
 
-
-
 #define RST_PIN         7          // Configurable, see typical pin layout above
 #define SS_PIN          6         // Configurable, see typical pin layout above
-
 
 String DeviceID = "i19ahbaj16";
 int errorDelay = 1000;
@@ -153,7 +150,7 @@ void loop() {
       retry:
       if(client.connect(IPAddress(192,168,1,7), 29882)){
         Serial.println("Client connected");
-        String data = DeviceID+":"+uid+":"+currentTime+"<EOF>";
+        String data = DeviceID+"?"+uid+"?"+currentTime+"<EOF>";
         client.print(data);
         Serial.println(data+"\n");
           String rData;

@@ -27,8 +27,6 @@ namespace tcpServer
 
     public class AsynchronousSocketListener
     {
-        public Prefernces p = new Prefernces();
-
         public string bound;
 
         // Thread signal.  
@@ -106,8 +104,6 @@ namespace tcpServer
 
         public static void ReadCallback(IAsyncResult ar)
         {
-            var p = new Prefernces();
-            var dtHandler = new DataHandler();
             String content = String.Empty;
 
             // Retrieve the state object and the handler socket  
@@ -128,11 +124,11 @@ namespace tcpServer
                 content = state.sb.ToString();
                 if (content.IndexOf("<EOF>") > -1)
                 {
-                    dtHandler.DataQueue.Enqueue(content.Replace("<EOF>", ""));
+                    DataQueue.Queue.Enqueue(content.Replace("<EOF>", ""));
                     Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");
                     handler.Close();
                 }
-                else if (p.DeviceIds.Contains(content.Split(':')[0]) == false)
+                else if (PreferncesStatic.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
                     Console.Clear();
 
@@ -158,7 +154,7 @@ namespace tcpServer
             handler.BeginSend(byteData, 0, byteData.Length, 0,
                 new AsyncCallback(SendCallback), handler);
         }
-        public static byte clear = 0;
+        public static int ReqNum = 0;
         private static void SendCallback(IAsyncResult ar)
         {
             try
@@ -168,10 +164,10 @@ namespace tcpServer
 
                 // Complete sending the data to the remote device.  
                 int bytesSent = handler.EndSend(ar);
-                clear++;
-                if (clear == 11)
-                    ClearLastLine();
-                Console.WriteLine("Sent {0} bytes to client >> {1}", bytesSent, handler.RemoteEndPoint);
+                ReqNum++;
+                Console.WriteLine("Total requests this session >> {0}                        ", ReqNum);
+                Console.WriteLine("Sent {0} bytes to client >> {1}                           ", bytesSent, handler.RemoteEndPoint);
+                Console.SetCursorPosition(0, Console.CursorTop - 2);
                 Thread.Sleep(50);
                 handler.Shutdown(SocketShutdown.Both);
                 handler.Close();
@@ -183,31 +179,6 @@ namespace tcpServer
             {
                 Console.WriteLine(e.ToString());
             }
-        }
-        public static void ClearLastLine()
-        {
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            Console.Write(new string(' ', Console.BufferWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - 0);
-            clear = 1;
         }
     }
 }

@@ -48,14 +48,76 @@ namespace tcpServer
             DeviceNote = new List<string>();
         }
     }
-    public class RawDataTable
+
+    public static class PreferncesStatic
     {
-        public DataTable DT { get; set; } = new DataTable();
-        public RawDataTable()
+        public static string DbType;
+        public static string ConnectionString;
+        public static IList<string> DeviceIds;
+        public static string DBUpdateTime;
+        static PreferncesStatic()
         {
+            DeviceIds = new List<string>();
+        }
+
+        public static void UpdateValues(string dbType, string connectionString, string dbUpdateTime)
+        {
+            DbType = dbType;
+            ConnectionString = connectionString;
+            DBUpdateTime = dbUpdateTime;
+        }
+        public static void DeviceAdd(string value)
+        {
+            // Record this value in the list.
+            DeviceIds.Add(value);
+        }
+        public static void ListIds()
+        {
+            foreach(string DeviceIds in DeviceIds)
+            {
+                Console.WriteLine(DeviceIds);
+            }
+        }
+        public static bool DeviceIdExists(string DeviceID)
+        {
+            if (DeviceIds.Contains(DeviceID))
+                return true;
+            else
+                return false;
+        }
+
+    }
+
+    public static class DataQueue
+    {
+        public static Queue<string> Queue;//Require to add to queue since DataTable is not thread safe
+        static DataQueue()
+        {
+            Queue = new Queue<string>();
+        }
+    }
+
+    public static class RawDataTable
+    {
+        public static DataTable DT;
+        static RawDataTable()
+        {
+            DT = new DataTable();
             DT.Columns.Add("C_DeviceID", typeof(string));
             DT.Columns.Add("Card_ID", typeof(string));
             DT.Columns.Add("In_Time", typeof(DateTime));
+        }
+
+
+        public static void List()
+        {
+            foreach (DataRow dataRow in DT.Rows)
+            {
+                foreach (var item in dataRow.ItemArray)
+                {
+                    Console.WriteLine(item);
+                }
+            }
         }
     }
 }

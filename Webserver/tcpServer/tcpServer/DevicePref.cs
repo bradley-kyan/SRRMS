@@ -60,6 +60,8 @@ namespace tcpServer
                     break;
                 case ConsoleKey.D3:
                     Header(3);
+                    PreferncesStatic.DeviceIds = p.DeviceIds.ToArray();
+                    PreferncesStatic.UpdateValues(p.DbType, p.ConnectionString, p.DBUpdateTime);
                     ServerStart.Initializer();
                     break;
                 case ConsoleKey.F12:
