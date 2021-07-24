@@ -60,6 +60,8 @@ namespace tcpServer
                     break;
                 case ConsoleKey.D3:
                     Header(3);
+                    PreferncesStatic.DeviceIds = p.DeviceIds.ToArray();
+                    PreferncesStatic.UpdateValues(p.DbType, p.ConnectionString, p.DBUpdateTime);
                     ServerStart.Initializer();
                     break;
                 case ConsoleKey.F12:
@@ -72,7 +74,7 @@ namespace tcpServer
                     break;
             }
         }
-        internal string Serializer()//Writes data to file
+        public string Serializer()//Writes data to file
         {
             Header(1);
             lock (this)
@@ -97,7 +99,7 @@ namespace tcpServer
             }
 
         }
-        internal string Deserializer()//Gets data from file
+        public string Deserializer()//Gets data from file
         {
             Header(1);
             lock (this)

@@ -10,11 +10,8 @@ namespace tcpServer
 {
     public class DataHandler
     {
-        public Queue<string> DataQueue { get; set; }//Require to add to queue since DataTable is not thread safe
-        public DataHandler()
-        {
-            DataQueue = new Queue<string>();
-        }
+        private static object _lock = new object();
+
         /// <summary>
         /// Cleans input string and returns the substring from <c>:</c> separator.
         /// <para />
@@ -27,7 +24,7 @@ namespace tcpServer
         /// <returns>LHS, MID or RHS input string as <c>string</c></returns>
         private string DataClean(string rawData, byte option)
         {
-            string[] array = rawData.Split(':');
+            string[] array = rawData.Split('?');
             switch (option)
             {
                 case 1:
@@ -41,12 +38,11 @@ namespace tcpServer
             }
         }
         /// <summary>
-        /// Starts timer with an interval predefined from p.DBUpdateTime. Updates SQL DB at defined time.
+        /// Starts timer with an interval predefined from PreferncesStatic.DBUpdateTime. Updates SQL DB at defined time.
         /// </summary>
         public void DBTimerContext()
         {
-            var p = new Prefernces();
-            string update = p.DBUpdateTime;
+            string update = PreferncesStatic.DBUpdateTime;
 
             System.Timers.Timer _t = new System.Timers.Timer()
             {
@@ -63,24 +59,24 @@ namespace tcpServer
         /// to seconds.
         /// </summary>
         /// <returns>Seconds as <c>long</c> datatype</returns>
-        public long ParseTimeTOSeconds(string time)
+        public double ParseTimeTOSeconds(string time)
         {
-            long secR;
+            double secR;
             if (time.Contains("s") || time.Contains("S"))
             {
                 var sRem = time.Replace("s", "").Replace("S", "");
-                return Convert.ToInt64(sRem);
+                return Convert.ToDouble(sRem);
             }
             else if (time.Contains("m") || time.Contains("m"))
             {
                 var mRem = time.Replace("m", "").Replace("M", "");
-                secR = Convert.ToInt64(mRem) * 60;
+                secR = Convert.ToDouble(mRem) * 60;
                 return secR;
             }
             else if (time.Contains("h") || time.Contains("H"))
             {
                 var mRem = time.Replace("m", "").Replace("M", "");
-                secR = Convert.ToInt64(mRem) * 60 ^ 2;
+                secR = Math.Pow((Convert.ToDouble(mRem) * 60), 2);
                 return secR;
             }
             else
@@ -88,33 +84,44 @@ namespace tcpServer
                 return 0;
             }
         }
+        public static int DBNum = 0;
         private void SendTableData(object source, EventArgs e)
         {
-            Prefernces p = new Prefernces();
-            RawDataTable r = new RawDataTable();
             try
             {
-                using (SqlConnection con = new SqlConnection(p.ConnectionString))
+                lock (_lock)
                 {
-                    con.Open();
-                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(con))
-                    {
-                        foreach (DataColumn c in r.DT.Columns)
-                            bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
 
-                        bulkCopy.DestinationTableName = "Data_Dump";
-                        try
+                    using (SqlConnection con = new SqlConnection(PreferncesStatic.ConnectionString))
+                    {
+                        con.Open();
+                        using (SqlBulkCopy bulkCopy = new SqlBulkCopy(con))
                         {
-                            bulkCopy.WriteToServer(r.DT);
+                            foreach (DataColumn c in RawDataTable.DT.Columns)
+                                bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
+
+                            bulkCopy.DestinationTableName = "Data_Dump";
+                            try
+                            {
+                                bulkCopy.WriteToServer(RawDataTable.DT);
+                                RawDataTable.DT.Clear();
+                                DBNum++;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
+                        con.Close();
+                        int currentpos = Console.CursorTop;
+                        Console.SetCursorPosition(0, 6);
+                        Console.Write(new string(' ', Console.BufferWidth));
+                        Console.Write($"Data sent to database at: {DateTime.Now} | Current DB requsts this session >> {DBNum}             ");
+                        Console.SetCursorPosition(0, currentpos);
+
                     }
-                    con.Close();
-                    Console.WriteLine($"Suceesfully sent {r.DT} to database at: {DateTime.Now}");
                 }
+
             }
             catch
             {
@@ -140,22 +147,16 @@ namespace tcpServer
             lock (this)
                 try
                 {
-                    if (DataQueue.Count != 0)
+                    if (DataQueue.Queue.Count != 0)
                     {
                         for (int i = 0; i < 2;)
                         {
-                            bool exit = false;
                             try
                             {
-                                exit = AddToDataTable(DataQueue.Peek());
-                            }
-                            catch { }
-                            if (exit == true)
-                            {
-                                DataQueue.Dequeue();
+                                AddToDataTable(DataQueue.Queue.Dequeue());
                                 break;
                             }
-                            else
+                            catch
                             {
                                 i++;
                             }
@@ -177,24 +178,18 @@ namespace tcpServer
         /// <returns><c>True</c> if successful execution. <c>Fasle</c> if unsuccessful</returns>
         public bool AddToDataTable(string RawData)
         {
-            var p = new Prefernces();
-            RawDataTable r = new RawDataTable();
-            string deviceCode = DataClean(RawData, 1);
-            if (VerifySender(deviceCode) is true)
+            lock (_lock)
             {
-                r.DT.Rows.Add(deviceCode, DataClean(RawData, 2), DataClean(RawData, 3));
-                return true;
+                string deviceCode = DataClean(RawData, 1);
+                if (PreferncesStatic.DeviceIdExists(deviceCode) == true)
+                {
+                    RawDataTable.DT.Rows.Add(deviceCode, DataClean(RawData, 2), DataClean(RawData, 3));
+                    return true;
+                }
+                else
+                    return false;
             }
-            else
-                return false;
-        }
-        private static bool VerifySender(string input)
-        {
-            Prefernces p = new Prefernces();
-            if (p.DeviceIds.Contains(input))
-                return true;
-            else
-                return false;
+
         }
     }
 }
