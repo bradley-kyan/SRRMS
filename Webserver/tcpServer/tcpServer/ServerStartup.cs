@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
-using System.Buffers.Text;
 
 namespace tcpServer
 {
@@ -128,7 +127,7 @@ namespace tcpServer
                     Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");
                     handler.Close();
                 }
-                else if (PreferncesStatic.DeviceIds.Contains(content.Split(':')[0]) == false)
+                else if (PreferencesStatic.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
                     Console.Clear();
 

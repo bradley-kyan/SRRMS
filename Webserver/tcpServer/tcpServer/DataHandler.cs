@@ -10,15 +10,18 @@ namespace tcpServer
 {
     public class DataHandler
     {
+        /// <summary>
+        /// Lock used for methods that access datatable: '<c>DT</c>'
+        /// </summary>
         private static object _lock = new object();
 
         /// <summary>
         /// Cleans input string and returns the substring from <c>:</c> separator.
         /// <para />
-        /// <c>rawData</c> =>
+        /// <term>rawData</term>
         /// <param name="rawData">Input Data</param>
         /// <para/>
-        /// <c>option</c> =>
+        /// <term>option</term>
         /// <param name="option"><c>1</c> :: Returns lhs substring, <c>2</c> :: Returns middle substring, <c>3</c> :: Returns rhs substring</param>
         /// </summary>
         /// <returns>LHS, MID or RHS input string as <c>string</c></returns>
@@ -38,11 +41,11 @@ namespace tcpServer
             }
         }
         /// <summary>
-        /// Starts timer with an interval predefined from PreferncesStatic.DBUpdateTime. Updates SQL DB at defined time.
+        /// Starts timer with an interval predefined from PreferencesStatic.DBUpdateTime. Updates SQL DB at defined time as defined in the prefernces file.
         /// </summary>
         public void DBTimerContext()
         {
-            string update = PreferncesStatic.DBUpdateTime;
+            string update = PreferencesStatic.DBUpdateTime;
 
             System.Timers.Timer _t = new System.Timers.Timer()
             {
@@ -55,7 +58,7 @@ namespace tcpServer
 
         /// <summary>
         /// Parses time as:  
-        /// <list type="bullet"><item>seconds (<c>s</c>)</item><item>minutes (<c>m</c>)</item><item>hours (<c>h</c>)</item></list>
+        /// <list type="bullet"><item>seconds ( <c>s | S</c> )</item><item>minutes ( <c>m | M</c> )</item><item>hours ( <c>h | H</c> )</item></list>
         /// to seconds.
         /// </summary>
         /// <returns>Seconds as <c>long</c> datatype</returns>
@@ -85,14 +88,19 @@ namespace tcpServer
             }
         }
         public static int DBNum = 0;
+        /// <summary>
+        /// Sends data to the DB from the provided connection string in the preferences file
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        /// <exception cref="Exception"></exception>
         private void SendTableData(object source, EventArgs e)
         {
             try
             {
                 lock (_lock)
                 {
-
-                    using (SqlConnection con = new SqlConnection(PreferncesStatic.ConnectionString))
+                    using (SqlConnection con = new SqlConnection(PreferencesStatic.ConnectionString))
                     {
                         con.Open();
                         using (SqlBulkCopy bulkCopy = new SqlBulkCopy(con))
@@ -107,7 +115,7 @@ namespace tcpServer
                                 RawDataTable.DT.Clear();
                                 DBNum++;
                             }
-                            catch (Exception ex)
+                            catch (Exception ex) //Writes to console if an error occurs when writing to the db
                             {
                                 Console.WriteLine(ex.Message);
                             }
@@ -118,18 +126,19 @@ namespace tcpServer
                         Console.Write(new string(' ', Console.BufferWidth));
                         Console.Write($"Data sent to database at: {DateTime.Now} | Current DB requsts this session >> {DBNum}             ");
                         Console.SetCursorPosition(0, currentpos);
-
                     }
                 }
 
             }
-            catch
+            catch (Exception ex)//Throws error if cannot connect to the DB
             {
                 Console.WriteLine("Sql Connection Error");
+                Console.WriteLine(ex);
+                throw new Exception();
             };
         }
         /// <summary>
-        /// Stars timer to run QueueHandler with an interval of 1ms
+        /// Stars timer to run <c>QueueHandler()</c> with an interval of 1ms
         /// </summary>
         public void QueueTimerContext()
         {
@@ -181,7 +190,7 @@ namespace tcpServer
             lock (_lock)
             {
                 string deviceCode = DataClean(RawData, 1);
-                if (PreferncesStatic.DeviceIdExists(deviceCode) == true)
+                if (PreferencesStatic.DeviceIdExists(deviceCode) == true)
                 {
                     RawDataTable.DT.Rows.Add(deviceCode, DataClean(RawData, 2), DataClean(RawData, 3));
                     return true;

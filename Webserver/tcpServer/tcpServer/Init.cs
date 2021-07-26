@@ -33,7 +33,10 @@ namespace tcpServer
 
         }
     }
-    public class Prefernces
+    /// <summary>
+    /// Used for getting/updating data from the preferences file -> in use due to json serializer/deserializer limitations
+    /// </summary>
+    public class Preferences
     {
         public DateTime UpdateTime { get; set; }
         public string DbType { get; set; }
@@ -42,24 +45,31 @@ namespace tcpServer
         public IList<string> DeviceNote { get; set; }
         public string DBUpdateTime { get; set; }
         
-        public Prefernces()
+        public Preferences()
         {
             DeviceIds = new List<string>();
             DeviceNote = new List<string>();
         }
     }
-
-    public static class PreferncesStatic
+    /// <summary>
+    /// Static version of preferences class for use when server starts
+    /// </summary>
+    public static class PreferencesStatic
     {
         public static string DbType;
         public static string ConnectionString;
         public static IList<string> DeviceIds;
         public static string DBUpdateTime;
-        static PreferncesStatic()
+        static PreferencesStatic()
         {
             DeviceIds = new List<string>();
         }
-
+        /// <summary>
+        /// Updates the static variables from the input data
+        /// </summary>
+        /// <param name="dbType"></param>
+        /// <param name="connectionString"></param>
+        /// <param name="dbUpdateTime"></param>
         public static void UpdateValues(string dbType, string connectionString, string dbUpdateTime)
         {
             DbType = dbType;
@@ -71,13 +81,21 @@ namespace tcpServer
             // Record this value in the list.
             DeviceIds.Add(value);
         }
-        public static void ListIds()
+        /// <summary>
+        /// Prints all currently stored device ID in the preferences file to the console
+        /// </summary>
+        public static void ListIds() 
         {
             foreach(string DeviceIds in DeviceIds)
             {
                 Console.WriteLine(DeviceIds);
             }
         }
+        /// <summary>
+        /// Returns True or False if the current ID is included in the preferences file
+        /// </summary>
+        /// <param name="DeviceID"></param>
+        /// <returns></returns>
         public static bool DeviceIdExists(string DeviceID)
         {
             if (DeviceIds.Contains(DeviceID))
@@ -87,7 +105,9 @@ namespace tcpServer
         }
 
     }
-
+    /// <summary>
+    /// Queue used for when new data is recieved from clients.
+    /// </summary>
     public static class DataQueue
     {
         public static Queue<string> Queue;//Require to add to queue since DataTable is not thread safe
@@ -96,9 +116,19 @@ namespace tcpServer
             Queue = new Queue<string>();
         }
     }
-
+    /// <summary>
+    /// Datatable used to stored 'cleaned' data stored in the queue -> <c>DataQueue</c>
+    /// </summary>
     public static class RawDataTable
     {
+        /// <summary>
+        /// Datatable with values: 
+        /// <list type="table">
+        /// <item><term>C_DeviceID</term> Device ID of client</item>
+        /// <item><term>Card_ID</term> UID of the scanned card</item>
+        /// <item><term>In_Time</term> Time the card was scanned from client</item>
+        /// </list>
+        /// </summary>
         public static DataTable DT;
         static RawDataTable()
         {
@@ -108,7 +138,9 @@ namespace tcpServer
             DT.Columns.Add("In_Time", typeof(DateTime));
         }
 
-
+        /// <summary>
+        /// Lists all the currently stored data in the datatable to the console
+        /// </summary>
         public static void List()
         {
             foreach (DataRow dataRow in DT.Rows)

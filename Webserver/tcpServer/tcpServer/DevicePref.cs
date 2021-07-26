@@ -10,7 +10,7 @@ namespace tcpServer
 {
     public class DevicePref : Init
     {
-        public Prefernces p = new Prefernces();
+        public Preferences p = new Preferences();
 
         public void Header(byte header)
         {
@@ -60,8 +60,8 @@ namespace tcpServer
                     break;
                 case ConsoleKey.D3:
                     Header(3);
-                    PreferncesStatic.DeviceIds = p.DeviceIds.ToArray();
-                    PreferncesStatic.UpdateValues(p.DbType, p.ConnectionString, p.DBUpdateTime);
+                    PreferencesStatic.DeviceIds = p.DeviceIds.ToArray();
+                    PreferencesStatic.UpdateValues(p.DbType, p.ConnectionString, p.DBUpdateTime);
                     ServerStart.Initializer();
                     break;
                 case ConsoleKey.F12:
@@ -112,7 +112,7 @@ namespace tcpServer
                     {
                         WriteIndented = true,
                     };
-                    p = JsonSerializer.Deserialize<Prefernces>(text, options);
+                    p = JsonSerializer.Deserialize<Preferences>(text, options);
                     string jsonString = JsonSerializer.Serialize(p, options);
 
                     return jsonString;

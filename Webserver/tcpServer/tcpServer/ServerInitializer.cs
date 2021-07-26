@@ -6,6 +6,9 @@ namespace tcpServer
 {
     public class ServerInitializer : DevicePref
     {
+        /// <summary>
+        /// Starts the TCP server with critical processes run on its own thread for simultaneous execution
+        /// </summary>
         internal void Initializer()
         {
             Header(1);
@@ -13,11 +16,11 @@ namespace tcpServer
             Console.WriteLine("Initalising...");
             Deserializer();
             Thread t1 = new Thread(new DataHandler().QueueTimerContext);
-            Thread t3 = new Thread(new DataHandler().DBTimerContext);
-            Thread t2 = new Thread(AsynchronousSocketListener.StartListening);
+            Thread t2 = new Thread(new DataHandler().DBTimerContext);
+            Thread t3 = new Thread(AsynchronousSocketListener.StartListening);
             t1.Start();
-            t3.Start();
             t2.Start();
+            t3.Start();
         }
     }
 }
