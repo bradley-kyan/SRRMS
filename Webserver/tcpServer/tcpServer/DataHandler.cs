@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading;
-using System.Timers;
 
 namespace tcpServer
 {
