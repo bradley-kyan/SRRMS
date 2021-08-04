@@ -130,7 +130,7 @@ namespace tcpServer
             {
                 Console.WriteLine("Sql Connection Error");
                 Console.WriteLine(ex);
-                throw new Exception();
+                throw;
             };
         }
         /// <summary>
