@@ -4,6 +4,8 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 #include <TimeLib.h>
+#include <Dns.h>
+
 
 #define RST_PIN         7          // Configurable, see typical pin layout above
 #define SS_PIN          6         // Configurable, see typical pin layout above
@@ -18,10 +20,12 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 EthernetClient client;
 String lastUid;
+DNSClient dnsC;
 
 EthernetUDP Udp;
 unsigned int localPort = 8888;
-IPAddress timeServer(129,6,15,28);
+IPAddress timeServer;
+IPAddress dnServer(8,8,8,8);
 
 String currentTime;
 const int timeZone = 12;
@@ -40,9 +44,13 @@ Serial.begin(9600);   // Initialize serial communications with the PC
   Ethernet.begin(mac);
     Serial.println("Connection Successful");
   delay(200);
+  dnsC.begin(dnServer);
+  dnsC.getHostByName("time-a-g.nist.gov",timeServer);
+  Serial.println("Got NTP IP");
+  delay(200);
   Serial.print("Updating Time.");
   delay(500);
-
+  
   Serial.println();
   Udp.begin(localPort);
   setSyncProvider(getNtpTime);
