@@ -12,3 +12,8 @@ SELECT TOP (1000) [S_UID]
       ,[Y_Level]
       ,[Subject_List]
   FROM [SRRMS_DB].[dbo].[Student_Info]
+  go
+  SELECT TOP (1000) [D_ID]
+      ,[Class_Description]
+      ,[C_DeviceID]
+  FROM [SRRMS_DB].[dbo].[Devices]

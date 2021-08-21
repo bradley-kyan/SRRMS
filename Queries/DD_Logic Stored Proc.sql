@@ -1,6 +1,7 @@
 --Create procedure DD_Logic
 --AS
 --BEGIN
+
 set nocount on
 
 	Declare @lastEditTime datetime = (

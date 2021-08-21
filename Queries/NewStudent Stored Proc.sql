@@ -24,3 +24,4 @@ Begin
 	end
 End
 
+-- Delete Proc SP_NewStudent
