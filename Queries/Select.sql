@@ -17,3 +17,6 @@ SELECT TOP (1000) [S_UID]
       ,[Class_Description]
       ,[C_DeviceID]
   FROM [SRRMS_DB].[dbo].[Devices]
+  go
+
+ Select * from [SRRMS_DB].[dbo].[Class_Info] order by [C_Override] ASC, [C_Name] DESC

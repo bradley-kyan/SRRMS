@@ -22,14 +22,15 @@ set nocount on
 			BEGIN
 				IF @DD is null
 				begin
-					SELECT 'null' AS 'Status'
+					Print 'Data_Dump table is empty'
+					return
 				end
 				else
 				begin
 					SELECT * into #Data_Dump_Temp from Data_Dump
 					Delete from Data_Dump
 					DBCC CHECKIDENT ('Data_Dump', RESEED, 0)
-					SELECT 'reseeded' AS 'Status'
+					Print 'Reseeded Data_Dump table'
 						SELECT * from #Data_Dump_Temp order by Card_ID, In_Time;
 					--Drop table #Data_Dump_Temp
 				end	
