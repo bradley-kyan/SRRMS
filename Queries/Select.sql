@@ -20,3 +20,9 @@ SELECT TOP (1000) [S_UID]
   go
 
  Select * from [SRRMS_DB].[dbo].[Class_Info] order by [C_Override] ASC, [C_Name] DESC
+
+ Select * from [SRRMS_DB].[dbo].[Attendence]
+
+ Select * from [SRRMS_DB].[dbo].[Times]
+
+ Select * from [SRRMS_DB].[dbo].[Time_Override]

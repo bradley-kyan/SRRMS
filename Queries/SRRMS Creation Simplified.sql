@@ -60,10 +60,11 @@ CREATE TABLE SRRMS_DB.dbo.Times(
 	Period_End5 time,
 )
 GO
-
 CREATE TABLE SRRMS_DB.dbo.Time_Override(
 	T_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	T_Day date not null,
+	T_OverrideBegin date not null,
+	T_OverrideEnd date not null,
 	Period_Time1 time,
 	Period_End1 time,
 	Period_Time2 time,
