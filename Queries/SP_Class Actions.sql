@@ -1,4 +1,4 @@
-Create proc SP_ClassAdd @C_Name varchar(80), @C_DeviceID char(10), @C_Day date, @C_Period tinyint, @C_Override bit, @C_Description varchar(255), @C_Override_Start date, @C_Override_End date
+Create proc ClassAdd @C_Name varchar(80), @C_DeviceID char(10), @C_Day date, @C_Period tinyint, @C_Override bit, @C_Description varchar(255), @C_Override_Start date, @C_Override_End date
 As
 begin
 	Declare @CheckExist char(10) = (select C_DeviceID from SRRMS_DB.dbo.Devices where C_DeviceID = @C_DeviceID)
@@ -24,7 +24,7 @@ begin
 end
 GO
 
-Create proc SP_ClassPurge @Class_Name varchar(80)
+Create proc ClassPurge @Class_Name varchar(80)
 As
 Begin
 	if @Class_Name is null
@@ -43,7 +43,7 @@ end
 
 GO
 
-Create proc SP_ClassGet @Overide bit
+Create proc ClassGet @Overide bit
 AS
 Begin
 	if @Overide is null
@@ -57,5 +57,5 @@ Begin
 	return
 End
 
--- drop proc SP_ClassAdd
--- drop proc SP_ClassPurgeAll
+-- drop proc ClassAdd
+-- drop proc ClassPurgeAll

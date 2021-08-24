@@ -1,4 +1,4 @@
-Create procedure SP_DeviceAorE @DeviceID char(10), @ClassDesc varchar(50)
+Create procedure DeviceAorE @DeviceID char(10), @ClassDesc varchar(50)
 As
 Begin
 	If (select C_DeviceID from SRRMS_DB.dbo.Devices where C_DeviceID = @DeviceID) = @DeviceID
@@ -23,19 +23,19 @@ End
 
 go
 
-Create proc SP_DeviceRem @DeviceID char(10)
+Create proc DeviceRem @DeviceID char(10)
 As
 begin
 	Delete from SRRMS_DB.dbo.Devices Where C_DeviceID = @DeviceID
 end
 go
 
-Create Proc SP_DeviceSearch @ClassDesc varchar(50)
+Create Proc DeviceSearch @ClassDesc varchar(50)
 AS
 Begin
 	Select * from SRRMS_DB.dbo.Devices where Class_Description like '%'+@ClassDesc+'%'
 End
 
--- Delete Proc SP_DeviceRem
--- Delete Proc SP_DeviceSearch
--- Delete Proc SP_DeviceAorE
+-- Delete Proc DeviceRem
+-- Delete Proc DeviceSearch
+-- Delete Proc DeviceAorE

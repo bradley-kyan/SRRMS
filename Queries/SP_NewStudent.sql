@@ -1,4 +1,4 @@
-Create Procedure SP_NewStudent @F_Name	varchar(100), @L_Name varchar(100), @HR_Code char(5), @Y_Level tinyint, @Subject_List varchar(max), @Card_ID varchar(max)
+Create Procedure NewStudent @F_Name	varchar(100), @L_Name varchar(100), @HR_Code char(5), @Y_Level tinyint, @Subject_List varchar(max), @Card_ID varchar(max)
 AS
 Begin
 	if @F_Name is null OR @L_Name is null OR @HR_Code is null OR @Y_Level is null
@@ -24,4 +24,4 @@ Begin
 	end
 End
 
--- drop Proc SP_NewStudent
+-- drop Proc NewStudent

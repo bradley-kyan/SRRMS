@@ -1,4 +1,4 @@
-Create Proc SP_ReseedDD
+Create Proc ReseedDD
 As
 Begin
 	Begin transaction
@@ -13,13 +13,13 @@ end
 
 GO
 
-Create Proc SP_GetPeriod @TimeInput time, @PeriodOutput tinyint OUTPUT, @Late bit OUTPUT
+Create Proc GetPeriod @TimeInput time, @PeriodOutput tinyint OUTPUT, @Late bit OUTPUT
 AS
 Begin
 	Declare @LateValueInMin int = 10
 	Declare @getdate char(9)
 	declare @now datetime = getdate()
-	Exec SP_StringToDate @now, @getdate OUTPUT 
+	Exec StringToDate @now, @getdate OUTPUT 
 	Declare @override char(9) = (select T_Day from SRRMS_DB.dbo.Time_Override where T_Day = @getdate)
 
 	if @override is null
@@ -190,7 +190,7 @@ BEGIN
 			else
 			begin
 				SELECT * into #Data_Dump_Temp from SRRMS_DB.dbo.Data_Dump
-				Exec SP_ReseedDD
+				Exec ReseedDD
 
 				Declare @value int = 0
 					While (1 = 1)
@@ -202,7 +202,7 @@ BEGIN
 						Declare @C_DeviceID datetime = (select C_DeviceID from #Data_Dump_Temp where DD_ID = @value)
 						Declare @Period tinyint
 						Declare @Late bit
-						Exec SP_GetPeriod @In_Time, @Period OUTPUT, @Late OUTPUT
+						Exec GetPeriod @In_Time, @Period OUTPUT, @Late OUTPUT
 						Declare @S_UID uniqueidentifier = (select S_UID from SRRMS_DB.dbo.Student_RFID where Card_ID = (select Card_ID from #Data_Dump_Temp where DD_ID = @value))
 						if @S_UID is not null
 							insert into SRRMS_DB.dbo.Attendence (S_UID, C_DeviceID, Real_TimeIn, A_Period, A_Late) Values (@S_UID, @C_DeviceID, @In_Time, @Period, @Late)

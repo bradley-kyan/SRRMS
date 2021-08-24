@@ -1,4 +1,4 @@
-Create Proc SP_StringToDate (@date char(9), @ReturnDate date out)
+Create Proc StringToDate (@date char(9), @ReturnDate date out)
 AS
 begin
 	declare @tryconvert char(9)
@@ -46,7 +46,7 @@ end
 
 go
 
-Create Proc SP_DateToString (@date char(9), @ReturnDate date out)
+Create Proc DateToString (@date char(9), @ReturnDate date out)
 AS
 begin
 	select @ReturnDate = datename(dw, convert(date, @date))
@@ -55,7 +55,7 @@ end
 
 go
 
-Create Proc SP_TimesAdd @T_Day char(9), @Period_Time1 time, @Period_End1 time, @Period_Time2 time, @Period_End2 time, @Period_Time3 time, @Period_End3 time, 
+Create Proc TimesAdd @T_Day char(9), @Period_Time1 time, @Period_End1 time, @Period_Time2 time, @Period_End2 time, @Period_Time3 time, @Period_End3 time, 
 	@Period_Time4 time, @Period_End4 time, @Period_Time5 time, @Period_End5 time
 AS
 Begin
@@ -65,7 +65,7 @@ Begin
 		end
 	declare @date date
 	begin try
-	exec SP_StringToDate @T_Day, @date OUTPUT
+	exec StringToDate @T_Day, @date OUTPUT
 	end try
 	begin catch
 		Print 'Invalid T_Day'
@@ -84,7 +84,7 @@ End
 
 GO
 
-Create Proc SP_TimesOveride @T_Day char(9), @T_OverrideBegin char(9), @T_OverrideEnd char(9), @Period_Time1 time, @Period_End1 time, @Period_Time2 time, @Period_End2 time,
+Create Proc TimesOveride @T_Day char(9), @T_OverrideBegin char(9), @T_OverrideEnd char(9), @Period_Time1 time, @Period_End1 time, @Period_Time2 time, @Period_End2 time,
 	@Period_Time3 time, @Period_End3 time, @Period_Time4 time, @Period_End4 time, @Period_Time5 time, @Period_End5 time
 AS
 Begin
@@ -94,7 +94,7 @@ Begin
 	begin
 		declare @Tdate date
 		begin try
-			exec SP_StringToDate @T_Day, @Tdate OUTPUT
+			exec StringToDate @T_Day, @Tdate OUTPUT
 			end try
 		begin catch
 			print 'An error has occured'
