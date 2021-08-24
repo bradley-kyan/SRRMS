@@ -2,13 +2,17 @@ Create Proc ReseedDD
 As
 Begin
 	Begin transaction
-		SELECT * FROM SRRMS_DB.dbo.Data_Dump WITH (TABLOCK, HOLDLOCK)
-
-		Delete from SRRMS_DB.dbo.Data_Dump
-		DBCC CHECKIDENT ('Data_Dump', RESEED, 0)
-		Print 'Reseeded Data_Dump table'
-
-	commit transaction
+		begin try
+			Delete from SRRMS_DB.dbo.Data_Dump
+			DBCC CHECKIDENT ('Data_Dump', RESEED, 0)
+			commit
+			Print 'Reseeded Data_Dump table'
+			return
+		end try
+		begin catch
+			rollback
+			return
+		end catch
 end
 
 GO
@@ -179,12 +183,13 @@ BEGIN
 		select DATEDIFF(s, @lastEditTime, GETDATE())
 	)
 	declare @DD varchar = (Select DD_ID From SRRMS_DB.dbo.Data_Dump where DD_ID = '1')
-	Declare @DbAccessMin int = 60
+	Declare @DbAccessMin int = 5
 	IF @dateDiff >= @DbAccessMin
 		BEGIN
 			IF @DD is null
 			begin
 				Print 'Data_Dump table is empty'
+				rollback
 				return
 			end
 			else
@@ -197,17 +202,27 @@ BEGIN
 					Begin
 						select top(1) @value = DD_ID from SRRMS_DB.dbo.Data_Dump where DD_ID > @value order by DD_ID
 						if @@ROWCOUNT = 0 break;
-						
-						Declare @In_Time datetime = (select In_Time from #Data_Dump_Temp where DD_ID = @value)
-						Declare @C_DeviceID datetime = (select C_DeviceID from #Data_Dump_Temp where DD_ID = @value)
-						Declare @Period tinyint
-						Declare @Late bit
-						Exec GetPeriod @In_Time, @Period OUTPUT, @Late OUTPUT
-						Declare @S_UID uniqueidentifier = (select S_UID from SRRMS_DB.dbo.Student_RFID where Card_ID = (select Card_ID from #Data_Dump_Temp where DD_ID = @value))
-						if @S_UID is not null
-							insert into SRRMS_DB.dbo.Attendence (S_UID, C_DeviceID, Real_TimeIn, A_Period, A_Late) Values (@S_UID, @C_DeviceID, @In_Time, @Period, @Late)
+						begin
+						begin tran
+							begin try
+								Declare @In_Time datetime = (select In_Time from #Data_Dump_Temp where DD_ID = @value)
+								Declare @C_DeviceID datetime = (select C_DeviceID from #Data_Dump_Temp where DD_ID = @value)
+								Declare @Period tinyint
+								Declare @Late bit
+								Exec GetPeriod @In_Time, @Period OUTPUT, @Late OUTPUT
+								Declare @S_UID uniqueidentifier = (select S_UID from SRRMS_DB.dbo.Student_RFID where Card_ID = (select Card_ID from #Data_Dump_Temp where DD_ID = @value))
+								if @S_UID is not null
+									insert into SRRMS_DB.dbo.Attendence (S_UID, C_DeviceID, Real_TimeIn, A_Period, A_Late) Values (@S_UID, @C_DeviceID, @In_Time, @Period, @Late)
+								commit
+							end try
+							begin catch
+								rollback
+							end catch
+						end
 					End
-				--Drop table #Data_Dump_Temp
+				begin tran
+					Drop table #Data_Dump_Temp
+				commit
 			end	
 		END
 	ELSE
