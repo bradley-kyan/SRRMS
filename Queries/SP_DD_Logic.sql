@@ -190,7 +190,7 @@ BEGIN
 			else
 			begin
 				SELECT * into #Data_Dump_Temp from SRRMS_DB.dbo.Data_Dump
-				Exec SP_Reseed
+				Exec SP_ReseedDD
 
 				Declare @value int = 0
 					While (1 = 1)
