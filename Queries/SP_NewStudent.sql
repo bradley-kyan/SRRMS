@@ -20,8 +20,8 @@ Begin
 		end try
 		begin catch
 		end catch
-		Insert into SRRMS_DB.dbo.Student_Info (F_Name, L_Name, HR_Code, Y_Level, Subject_List, S_UID) Values (@F_Name, @L_Name, @HR_Code, @Y_Level, @Subject_List, (select S_UID from Student_RFID where Card_ID = @Card_ID))
+		Insert into SRRMS_DB.dbo.Student_Info (F_Name, L_Name, HR_Code, Y_Level, Subject_List, S_UID) Values (@F_Name, @L_Name, @HR_Code, @Y_Level, @Subject_List, (select S_UID from SRRMS_DB.dbo.Student_RFID where Card_ID = @Card_ID))
 	end
 End
 
--- Delete Proc SP_NewStudent
+-- drop Proc SP_NewStudent

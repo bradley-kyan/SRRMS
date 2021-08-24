@@ -82,13 +82,14 @@ CREATE TABLE SRRMS_DB.dbo.Attendence(
 	A_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
 	S_UID uniqueidentifier NOT NULL,
 	FOREIGN KEY (S_UID) REFERENCES  Student_RFID(S_UID),
+	C_DeviceID char(10),
+	FOREIGN KEY(C_DeviceID) REFERENCES Devices(C_DeviceID),
 	A_Date date default cast( getdate() as date) not null,
 	Real_TimeIn datetime not null,
 	A_Period tinyint not null,
 	A_Late bit not null,
 )
 GO
-
 
 CREATE TABLE SRRMS_DB.dbo.Data_Dump(
 	DD_ID int NOT NULL IDENTITY(1,1) PRIMARY KEY,
