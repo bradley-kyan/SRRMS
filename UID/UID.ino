@@ -156,7 +156,7 @@ void loop() {
       lastUid = uid; //save current card to local memory
       int i = 0;
       retry:
-      if(client.connect(IPAddress(192,168,1,7), 29882)){
+      if(client.connect(IPAddress(192,168,1,75), 29882)){
         Serial.println("Client connected");
         String data = DeviceID+"?"+uid+"?"+currentTime+"<EOF>";
         client.print(data);

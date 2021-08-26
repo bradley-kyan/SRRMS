@@ -1,11 +1,11 @@
 Create procedure DeviceAorE @DeviceID char(10), @ClassDesc varchar(50)
 As
 Begin
-	begin tran
 	If (select C_DeviceID from SRRMS_DB.dbo.Devices where C_DeviceID = @DeviceID) = @DeviceID
 	Begin
 		if (select Class_Description from SRRMS_DB.dbo.Devices where Class_Description = @ClassDesc) != @ClassDesc
 		Begin
+			begin tran
 			Update SRRMS_DB.dbo.Devices SET Class_Description = @ClassDesc Where C_DeviceID = @DeviceID
 			commit
 			Print 'Updated Class Description'
@@ -17,6 +17,7 @@ Begin
 	End
 	Else
 	Begin
+		begin tran
 		Insert into SRRMS_DB.dbo.Devices (C_DeviceID, Class_Description) Values (@DeviceID, @ClassDesc)
 		commit
 		Print 'Successfully Added Device: ' + @DeviceID + ' ||  Description: ' + @ClassDesc

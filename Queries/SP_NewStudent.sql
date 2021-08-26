@@ -1,14 +1,13 @@
 Create Procedure NewStudent @F_Name	varchar(100), @L_Name varchar(100), @HR_Code char(5), @Y_Level tinyint, @Subject_List varchar(max), @Card_ID varchar(max)
 AS
 Begin
-	begin tran
 	if @F_Name is null OR @L_Name is null OR @HR_Code is null OR @Y_Level is null
 	begin
-		rollback
 		return
 	end
 	if @Card_ID is null
 	begin
+		begin tran
 		declare @scope int;	
 		Insert into SRRMS_DB.dbo.Student_RFID (Card_ID) Values (null)
 		SELECT @scope = SCOPE_IDENTITY()
@@ -18,6 +17,7 @@ Begin
 	end
 	else
 	begin
+		begin tran
 		begin try
 			Insert into SRRMS_DB.dbo.Student_RFID (Card_ID) Values (@Card_ID)
 		end try
