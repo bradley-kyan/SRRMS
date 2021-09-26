@@ -33,6 +33,9 @@ namespace tcpServer
 
         }
     }
+    /// <summary>
+    /// Base prefernces used during cli prefernces management
+    /// </summary>
     public class Prefernces
     {
         public DateTime UpdateTime { get; set; }
@@ -48,7 +51,9 @@ namespace tcpServer
             DeviceNote = new List<string>();
         }
     }
-
+    /// <summary>
+    /// Static version of prefernces to be accesed during runtime
+    /// </summary>
     public static class PreferncesStatic
     {
         public static string DbType;
@@ -87,7 +92,9 @@ namespace tcpServer
         }
 
     }
-
+    /// <summary>
+    /// Queue used to store scanned data awaiting to be pushed to datatable
+    /// </summary>
     public static class DataQueue
     {
         public static Queue<string> Queue;//Require to add to queue since DataTable is not thread safe
@@ -96,7 +103,9 @@ namespace tcpServer
             Queue = new Queue<string>();
         }
     }
-
+    /// <summary>
+    /// Data Table used to store scanned data from readers
+    /// </summary>
     public static class RawDataTable
     {
         public static DataTable DT;
@@ -108,7 +117,9 @@ namespace tcpServer
             DT.Columns.Add("In_Time", typeof(DateTime));
         }
 
-
+        /// <summary>
+        /// Returns and writes current data table data to cli
+        /// </summary>
         public static void List()
         {
             foreach (DataRow dataRow in DT.Rows)

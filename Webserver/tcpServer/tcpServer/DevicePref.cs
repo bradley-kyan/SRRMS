@@ -14,7 +14,6 @@ namespace tcpServer
 
         public void Header(byte header)
         {
-            //Calvin S Font https://patorjk.com/software/taag/#p=display&f=Calvin%20S&t=
             string title = "\n \u2554\u2550\u2557\u2566\u2550\u2557\u2566\u2550\u2557\u2554\u2566\u2557\u2554\u2550\u2557  \u2554\u2550\u2557\u2554\u2550\u2557\u2566\u2550\u2557\u2566  \u2566\u2554\u2550\u2557\u2566\u2550\u2557\r\n \u255A\u2550\u2557\u2560\u2566\u255D\u2560\u2566\u255D\u2551\u2551\u2551\u255A\u2550\u2557  \u255A\u2550\u2557\u2551\u2563 \u2560\u2566\u255D\u255A\u2557\u2554\u255D\u2551\u2563 \u2560\u2566\u255D\r\n \u255A\u2550\u255D\u2569\u255A\u2550\u2569\u255A\u2550\u2569 \u2569\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D\u2569\u255A\u2550 \u255A\u255D \u255A\u2550\u255D\u2569\u255A\u2550\n";
             switch (header)
             {
@@ -124,6 +123,9 @@ namespace tcpServer
                 }
             }
         }
+        /// <summary>
+        /// Console controller used for handling device options from cli
+        /// </summary>
         public void DeviceManage()
         {
             Header(1);
@@ -154,12 +156,19 @@ namespace tcpServer
                     break;
             }
         }
+        /// <summary>
+        /// Returns the current amount of valid devices regestered with the the server
+        /// </summary>
+        /// <returns></returns>
         public int DeviceCount()
         {
             var none = 0;
             int amount = p?.DeviceIds?.Count ?? none;
             return amount;
         }
+        /// <summary>
+        /// Console controller used for viewing current devices as a list
+        /// </summary>
         public void ViewDevices()
         {
             bool repeat;
@@ -182,6 +191,9 @@ namespace tcpServer
             }
             while (repeat == true);
         }
+        /// <summary>
+        /// Called to add devices from cli
+        /// </summary>
         public void AddDevice()
         {
             bool repeat = false;
@@ -271,6 +283,9 @@ namespace tcpServer
             Serializer();
             DeviceManage();
         }
+        /// <summary>
+        /// Method which removes a device that matches the id of the input through the cli
+        /// </summary>
         public void RemoveDevice()
         {
             bool repeat = false;
@@ -348,6 +363,9 @@ namespace tcpServer
             while (repeat == true);
             DeviceManage();
         }
+        /// <summary>
+        /// Returns and writes all current devices to cli
+        /// </summary>
         public void Devices()
         {
             int amount = 1;
@@ -357,6 +375,9 @@ namespace tcpServer
                 amount++;
             }
         }
+        /// <summary>
+        /// Management of the database connection through cli
+        /// </summary>
         public void Pref()
         {
             var conStr = new ConnectionString();
@@ -479,6 +500,10 @@ namespace tcpServer
             SetConString();
             Pref();
         }
+        /// <summary>
+        /// Returns DB connection string from prefernces file
+        /// </summary>
+        /// <returns>Connection String</returns>
         internal string GetConString()
         {
             Deserializer();
@@ -487,6 +512,9 @@ namespace tcpServer
             else
                 return p.ConnectionString;
         }
+        /// <summary>
+        /// Sets connection string from cli input
+        /// </summary>
         internal void SetConString()
         {
             Serializer();

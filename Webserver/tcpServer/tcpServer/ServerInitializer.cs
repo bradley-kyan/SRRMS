@@ -6,6 +6,9 @@ namespace tcpServer
 {
     public class ServerInitializer : DevicePref
     {
+        /// <summary>
+        /// Called to start the listening server and run data handling methods
+        /// </summary>
         internal void Initializer()
         {
             Header(1);

@@ -13,7 +13,7 @@ namespace tcpServer
         private static object _lock = new object();
 
         /// <summary>
-        /// Cleans input string and returns the substring from <c>:</c> separator.
+        /// Cleans input string and returns the substring from <c>?</c> separator.
         /// <para />
         /// <c>rawData</c> =>
         /// <param name="rawData">Input Data</param>
@@ -59,24 +59,24 @@ namespace tcpServer
         /// to seconds.
         /// </summary>
         /// <returns>Seconds as <c>long</c> datatype</returns>
-        public double ParseTimeTOSeconds(string time)
+        public double ParseTimeTOSeconds(string time) //All it does is convert the input to seconds
         {
             double secR;
             if (time.Contains("s") || time.Contains("S"))
             {
                 var sRem = time.Replace("s", "").Replace("S", "");
-                return Convert.ToDouble(sRem);
+                return Convert.ToDouble(sRem); //Already in seconds format, do nothing
             }
             else if (time.Contains("m") || time.Contains("m"))
             {
                 var mRem = time.Replace("m", "").Replace("M", "");
-                secR = Convert.ToDouble(mRem) * 60;
+                secR = Convert.ToDouble(mRem) * 60;//Convert Minutes to seconds
                 return secR;
             }
             else if (time.Contains("h") || time.Contains("H"))
             {
                 var mRem = time.Replace("m", "").Replace("M", "");
-                secR = Math.Pow((Convert.ToDouble(mRem) * 60), 2);
+                secR = Convert.ToDouble(mRem) * 3600;//convert hours to seconds
                 return secR;
             }
             else
@@ -85,17 +85,22 @@ namespace tcpServer
             }
         }
         public static int DBNum = 0;
+        /// <summary>
+        /// Sends data from the datatable to the SQL Server database through the connection string defined in the prefernces file
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         private void SendTableData(object source, EventArgs e)
         {
             try
             {
-                lock (_lock)
+                lock (_lock)//locks method to keep thread safe
                 {
 
-                    using (SqlConnection con = new SqlConnection(PreferncesStatic.ConnectionString))
+                    using (SqlConnection con = new SqlConnection(PreferncesStatic.ConnectionString))//Connects to DB through prefereneces connection string
                     {
                         con.Open();
-                        using (SqlBulkCopy bulkCopy = new SqlBulkCopy(con))
+                        using (SqlBulkCopy bulkCopy = new SqlBulkCopy(con))//dumps the data in the datatable into the Data_Dump table located in the SQL DB
                         {
                             foreach (DataColumn c in RawDataTable.DT.Columns)
                                 bulkCopy.ColumnMappings.Add(c.ColumnName, c.ColumnName);
@@ -104,8 +109,8 @@ namespace tcpServer
                             try
                             {
                                 bulkCopy.WriteToServer(RawDataTable.DT);
-                                RawDataTable.DT.Clear();
-                                DBNum++;
+                                RawDataTable.DT.Clear(); //clears the datatable
+                                DBNum++;//used for statistics to show amount of DB access per session
                             }
                             catch (Exception ex)
                             {
@@ -116,7 +121,7 @@ namespace tcpServer
                         int currentpos = Console.CursorTop;
                         Console.SetCursorPosition(0, 6);
                         Console.Write(new string(' ', Console.BufferWidth));
-                        Console.Write($"Data sent to database at: {DateTime.Now} | Current DB requsts this session >> {DBNum}             ");
+                        Console.Write($"Data sent to database at: {DateTime.Now} | Current DB requsts this session >> {DBNum}             ");//Writes statistics to console
                         Console.SetCursorPosition(0, currentpos);
 
                     }
@@ -141,15 +146,17 @@ namespace tcpServer
             };
             _t.Elapsed += QueueHandler;
         }
-
+        /// <summary>
+        /// Method run by QueueTimerContext()
+        /// </summary>
         public void QueueHandler(object thisobj, EventArgs e)
         {
-            lock (this)
+            lock (this)//locks method to prevent multiple executions if exection time is slower than QueueTimerFContext() method call
                 try
                 {
-                    if (DataQueue.Queue.Count != 0)
+                    if (DataQueue.Queue.Count != 0)//checks if Queue is empty
                     {
-                        for (int i = 0; i < 2;)
+                        for (int i = 0; i < 2;)//Tries twice to dequeue to prevent spaghetti
                         {
                             try
                             {
@@ -158,7 +165,7 @@ namespace tcpServer
                             }
                             catch
                             {
-                                i++;
+                                i++;//if error occurs try again
                             }
                         }
                     }
@@ -167,7 +174,7 @@ namespace tcpServer
                         return;
                     }
                 }
-                catch
+                catch //runs if method cannot be locked
                 {
                     return;
                 }
@@ -178,12 +185,12 @@ namespace tcpServer
         /// <returns><c>True</c> if successful execution. <c>Fasle</c> if unsuccessful</returns>
         public bool AddToDataTable(string RawData)
         {
-            lock (_lock)
+            lock (_lock) //locks method to prevent multiple executions to keep thread safe
             {
                 string deviceCode = DataClean(RawData, 1);
-                if (PreferncesStatic.DeviceIdExists(deviceCode) == true)
+                if (PreferncesStatic.DeviceIdExists(deviceCode) == true)//check if the device code of the sender is valid
                 {
-                    RawDataTable.DT.Rows.Add(deviceCode, DataClean(RawData, 2), DataClean(RawData, 3));
+                    RawDataTable.DT.Rows.Add(deviceCode, DataClean(RawData, 2), DataClean(RawData, 3));//Adds data to datatable
                     return true;
                 }
                 else
