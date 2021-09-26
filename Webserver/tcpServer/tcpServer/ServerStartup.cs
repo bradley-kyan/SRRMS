@@ -40,7 +40,6 @@ namespace tcpServer
             int portNum = 29882;
             // Establish the local endpoint for the socket.  
             // The DNS name of the computer  
-            // running the listener is "host.contoso.com".
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             IPAddress ipAddress = Array.Find(ipHostInfo.AddressList, a => a.AddressFamily == AddressFamily.InterNetwork);
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, portNum);
@@ -125,8 +124,8 @@ namespace tcpServer
                 if (content.IndexOf("<EOF>") > -1)
                 {
                     DataQueue.Queue.Enqueue(content.Replace("<EOF>", ""));
-                    Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");
-                    handler.Close();
+                    Send(handler, $"HTTP/1.1 200 OK\nDate: {DateTime.Now}");//Authorized device, return OK
+                    handler.Close();//close connection
                 }
                 else if (PreferncesStatic.DeviceIds.Contains(content.Split(':')[0]) == false)
                 {
@@ -134,8 +133,8 @@ namespace tcpServer
 
                     Console.WriteLine(new AsynchronousSocketListener().bound);
                     Console.WriteLine("auth.error >> " + handler.RemoteEndPoint);
-                    Send(handler, $"HTTP/1.1 403 Forbidden\nDate: {DateTime.Now}");
-                    handler.Close();
+                    Send(handler, $"HTTP/1.1 403 Forbidden\nDate: {DateTime.Now}");//Unauthorized device, tell device it is unauthorized
+                    handler.Close();//close connection
                 }
                 else
                 {

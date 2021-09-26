@@ -38,22 +38,6 @@ namespace tcpServer
             }
         }
         /// <summary>
-        /// Starts timer with an interval predefined from PreferncesStatic.DBUpdateTime. Updates SQL DB at defined time.
-        /// </summary>
-        public void DBTimerContext()
-        {
-            string update = PreferncesStatic.DBUpdateTime;
-
-            System.Timers.Timer _t = new System.Timers.Timer()
-            {
-                AutoReset = true,
-                Enabled = true,
-                Interval = TimeSpan.FromSeconds(ParseTimeTOSeconds(update)).TotalMilliseconds
-            };
-            _t.Elapsed += SendTableData;
-        }
-
-        /// <summary>
         /// Parses time as:  
         /// <list type="bullet"><item>seconds (<c>s</c>)</item><item>minutes (<c>m</c>)</item><item>hours (<c>h</c>)</item></list>
         /// to seconds.
@@ -83,6 +67,21 @@ namespace tcpServer
             {
                 return 0;
             }
+        }
+        /// <summary>
+        /// Starts timer with an interval predefined from PreferncesStatic.DBUpdateTime. Updates SQL DB at defined time.
+        /// </summary>
+        public void DBTimerContext()
+        {
+            string update = PreferncesStatic.DBUpdateTime;
+
+            System.Timers.Timer _t = new System.Timers.Timer()
+            {
+                AutoReset = true,
+                Enabled = true,
+                Interval = TimeSpan.FromSeconds(ParseTimeTOSeconds(update)).TotalMilliseconds
+            };
+            _t.Elapsed += SendTableData;
         }
         public static int DBNum = 0;
         /// <summary>
