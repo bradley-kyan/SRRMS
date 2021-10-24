@@ -27,7 +27,7 @@ IPAddress timeServer;
 IPAddress dnServer(8, 8, 8, 8);
 
 String currentTime;
-const int timeZone = 12;
+const int timeZone = 13;
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);  // Create MFRC522 instance
 
@@ -44,7 +44,7 @@ void setup() {
   Serial.println("Connection Successful");
   delay(200);
   dnsC.begin(dnServer);
-  dnsC.getHostByName("time-a-g.nist.gov", timeServer);
+  dnsC.getHostByName("pool.msltime.measurement.govt.nz", timeServer);
   Serial.println("Got NTP IP");
   delay(200);
   Serial.print("Updating Time.");
